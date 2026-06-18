@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* The "golden hour" draining bar — the platform's signature element.
+   A literal beam of light running out under each question. */
+@keyframes drain {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+.timer-bar {
+  transform-origin: left;
+  animation: drain linear forwards;
+}
