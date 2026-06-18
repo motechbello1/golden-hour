@@ -4,7 +4,7 @@ python publish_exam.py
 """
 from config import supabase
 
-SECONDS_PER_QUESTION = 15
+SECONDS_PER_QUESTION = 25
 QUESTIONS_PER_EXAM = 25   # drawn randomly from the 100-question bank per student
 
 

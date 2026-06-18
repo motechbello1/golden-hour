@@ -4,284 +4,337 @@ import { api, proctorSocketUrl } from "../lib/api";
 import { setupLockdown } from "../lib/useLockdown";
 import { ProctorCamera } from "../components/ProctorCamera";
 
-const HEARTBEAT_INTERVAL_MS = 5000;
-const OPTION_LABELS = ["A", "B", "C", "D", "E"];
+const HEARTBEAT_MS = 5000;
+const LABELS = ["A", "B", "C", "D", "E"];
 
 export default function Exam() {
   const { examId } = useParams();
   const navigate = useNavigate();
-  const socketRef = useRef(null);
-  const lockdownTeardownRef = useRef(null);
-  const questionStartRef = useRef(null);
+  const wsRef = useRef(null);
+  const teardownRef = useRef(null);
+  const startTimeRef = useRef(null);
+  const advancingRef = useRef(false);
 
   const [phase, setPhase] = useState("camera-check");
   const [cameraOk, setCameraOk] = useState(false);
   const [question, setQuestion] = useState(null);
   const [selected, setSelected] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(15);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [error, setError] = useState(null);
   const [endReason, setEndReason] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const sendEvent = useCallback((payload) => {
-    if (socketRef.current?.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify(payload));
-    }
+  // ── Socket ──
+  const sendEvent = useCallback((p) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN)
+      wsRef.current.send(JSON.stringify(p));
   }, []);
 
-  const handleViolation = useCallback((eventType, meta) => {
-    sendEvent({ type: "violation", event_type: eventType, meta });
-  }, [sendEvent]);
+  const handleFlag = useCallback(
+    ({ event_type, meta, snapshot_base64 }) =>
+      sendEvent({ type: "flag", event_type, meta, snapshot_base64 }),
+    [sendEvent]
+  );
 
-  const handleFlag = useCallback(({ event_type, meta, snapshot_base64 }) => {
-    sendEvent({ type: "flag", event_type, meta, snapshot_base64 });
-  }, [sendEvent]);
+  const connectSocket = useCallback(
+    (sid) => {
+      const ws = new WebSocket(proctorSocketUrl(sid));
+      ws.onmessage = (e) => {
+        const d = JSON.parse(e.data);
+        if (d.type === "auto_submitted") {
+          setEndReason(d.reason);
+          setPhase("ended");
+        }
+      };
+      wsRef.current = ws;
+      const hb = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN)
+          ws.send(JSON.stringify({ type: "heartbeat" }));
+      }, HEARTBEAT_MS);
+      ws.onclose = () => clearInterval(hb);
+    },
+    []
+  );
 
-  const connectSocket = useCallback((sessionId) => {
-    const ws = new WebSocket(proctorSocketUrl(sessionId));
-    ws.onmessage = (msg) => {
-      const data = JSON.parse(msg.data);
-      if (data.type === "auto_submitted") {
-        setEndReason(data.reason);
-        setPhase("ended");
+  // ── Advance to next question ──
+  const advance = useCallback(
+    async (optId, auto) => {
+      if (!question || advancingRef.current) return;
+      advancingRef.current = true;
+      setSubmitting(true);
+      try {
+        const res = await api.submitAnswer({
+          session_id: question.session_id,
+          question_id: question.question_id,
+          selected_option_id: optId,
+          time_taken_ms: Date.now() - startTimeRef.current,
+          auto_advanced: auto,
+        });
+        if (res.finished) {
+          setEndReason("completed");
+          setPhase("ended");
+        } else {
+          setQuestion(res.next_question);
+          setTimeLeft(res.next_question.time_seconds);
+          setSelected(null);
+          startTimeRef.current = Date.now();
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setSubmitting(false);
+        advancingRef.current = false;
       }
-    };
-    socketRef.current = ws;
-    const heartbeat = setInterval(() => {
-      if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: "heartbeat" }));
-    }, HEARTBEAT_INTERVAL_MS);
-    ws.onclose = () => clearInterval(heartbeat);
-  }, []);
+    },
+    [question]
+  );
 
-  const advance = useCallback(async (selectedOptionId, autoAdvanced) => {
-    if (!question) return;
-    const timeTakenMs = Date.now() - questionStartRef.current;
-    setPhase("submitting");
-    try {
-      const result = await api.submitAnswer({
-        session_id: question.session_id,
-        question_id: question.question_id,
-        selected_option_id: selectedOptionId,
-        time_taken_ms: timeTakenMs,
-        auto_advanced: autoAdvanced,
-      });
-      if (result.finished) {
-        setEndReason("completed");
-        setPhase("ended");
-      } else {
-        setQuestion(result.next_question);
-        setSelected(null);
-        setTimeLeft(result.next_question.time_seconds);
-        questionStartRef.current = Date.now();
-        setPhase("in-progress");
-      }
-    } catch (err) {
-      setError(err.message);
-      setPhase("in-progress");
-    }
-  }, [question]);
+  // ── Timer ──
+  const selectedRef = useRef(null);
+  selectedRef.current = selected;
 
-  // Timer tick
   useEffect(() => {
-    if (phase !== "in-progress" || !question) return;
-    setTimeLeft(question.time_seconds);
-    const interval = setInterval(() => {
+    if (phase !== "exam" || !question) return;
+    const iv = setInterval(() => {
       setTimeLeft((t) => {
         if (t <= 1) {
-          clearInterval(interval);
+          clearInterval(iv);
+          // Auto-advance with whatever is selected (or null)
+          setTimeout(() => advance(selectedRef.current, true), 0);
           return 0;
         }
         return t - 1;
       });
     }, 1000);
-    return () => clearInterval(interval);
+    return () => clearInterval(iv);
   }, [question?.question_id, phase]);
 
-  // Auto-advance when timer hits 0
+  // ── End cleanup ──
   useEffect(() => {
-    if (timeLeft === 0 && phase === "in-progress") {
-      advance(selected, true);
-    }
-  }, [timeLeft, phase]);
-
-  // Cleanup on exam end
-  useEffect(() => {
-    if (phase === "ended") {
-      const sid = question?.session_id;
-      socketRef.current?.close();
-      lockdownTeardownRef.current?.();
-      if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
-      const t = setTimeout(() => navigate(`/results/${sid}`), 2000);
-      return () => clearTimeout(t);
-    }
+    if (phase !== "ended") return;
+    const sid = question?.session_id;
+    wsRef.current?.close();
+    teardownRef.current?.();
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    const t = setTimeout(() => navigate(`/results/${sid}`), 2000);
+    return () => clearTimeout(t);
   }, [phase]);
 
+  // ── Begin ──
   async function beginExam() {
     setError(null);
     try {
-      // Enter fullscreen ONCE via the user's click gesture — never again.
-      // This is the fix for the in/out fullscreen loop: the old code called
-      // requestFullscreen inside a useEffect that re-ran on every phase change.
-      try {
-        await document.documentElement.requestFullscreen();
-      } catch (_) {
-        // Fullscreen not available or denied — continue anyway
-      }
-
+      await document.documentElement.requestFullscreen().catch(() => {});
       const q = await api.startExam(examId);
       setQuestion(q);
       setTimeLeft(q.time_seconds);
+      startTimeRef.current = Date.now();
       connectSocket(q.session_id);
-      questionStartRef.current = Date.now();
-
-      // Set up lockdown listeners exactly once
-      lockdownTeardownRef.current = setupLockdown(handleViolation);
-      setPhase("in-progress");
+      teardownRef.current = setupLockdown((evType) =>
+        sendEvent({ type: "violation", event_type: evType })
+      );
+      setPhase("exam");
     } catch (err) {
       setError(err.message);
-      if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     }
   }
 
-  // ─── Camera check screen ───────────────────────────────────────────────────
+  // ────────────────────── CAMERA CHECK ──────────────────────
   if (phase === "camera-check") {
     return (
-      <div className="min-h-screen bg-ink flex flex-col items-center justify-center px-6 text-center">
-        <div className="w-full max-w-md space-y-6">
+      <div className="min-h-screen bg-ink flex items-center justify-center px-5">
+        <div className="w-full max-w-md space-y-8 text-center">
           <div>
-            <p className="text-ash text-xs uppercase tracking-widest mb-2 font-mono">ICBM Bootcamp</p>
-            <h1 className="font-display text-3xl text-ivory">Before you begin</h1>
+            <p className="text-hour text-xs font-mono uppercase tracking-[.25em] mb-3">
+              ICBM Technical Bootcamp
+            </p>
+            <h1 className="font-display text-4xl text-ivory leading-tight">
+              Golden Hour
+            </h1>
+            <p className="text-ash text-sm mt-2">Assessment environment</p>
           </div>
 
-          <div className="text-left bg-surface rounded-xl p-5 space-y-2 text-sm text-ash border border-surface2">
-            <p>📷 &nbsp;Camera must stay on for the full session</p>
-            <p>🖥️ &nbsp;Exam runs in fullscreen — exiting auto-submits</p>
-            <p>🔒 &nbsp;Switching tabs auto-submits immediately</p>
-            <p>🔄 &nbsp;Lost connection? Reopen this page to resume</p>
+          <div className="bg-surface/50 backdrop-blur rounded-2xl border border-surface2 p-6 text-left space-y-3">
+            <h2 className="text-ivory text-sm font-semibold mb-2">Before you start</h2>
+            <div className="flex gap-3 items-start text-sm text-ash">
+              <span className="text-hour text-lg leading-none mt-0.5">◉</span>
+              <span>Camera stays on for the full session</span>
+            </div>
+            <div className="flex gap-3 items-start text-sm text-ash">
+              <span className="text-hour text-lg leading-none mt-0.5">◉</span>
+              <span>Runs in fullscreen — leaving auto-submits your exam</span>
+            </div>
+            <div className="flex gap-3 items-start text-sm text-ash">
+              <span className="text-hour text-lg leading-none mt-0.5">◉</span>
+              <span>Switching tabs auto-submits immediately</span>
+            </div>
+            <div className="flex gap-3 items-start text-sm text-ash">
+              <span className="text-good text-lg leading-none mt-0.5">◉</span>
+              <span>Lost connection? Reopen to resume where you left off</span>
+            </div>
           </div>
 
-          <ProctorCamera
-            onFlag={handleFlag}
-            onCameraReady={() => setCameraOk(true)}
-            onCameraError={() => setCameraOk(false)}
-          />
+          <div className="flex justify-center">
+            <ProctorCamera
+              onFlag={handleFlag}
+              onCameraReady={() => setCameraOk(true)}
+              onCameraError={() => setCameraOk(false)}
+            />
+          </div>
 
-          {error && <p className="text-alert text-sm">{error}</p>}
+          {error && (
+            <p className="text-alert text-sm bg-alert/10 rounded-lg px-4 py-2">{error}</p>
+          )}
 
           <button
             disabled={!cameraOk}
             onClick={beginExam}
-            className="w-full py-4 rounded-xl bg-hour text-ink font-semibold text-lg disabled:opacity-30 disabled:cursor-not-allowed transition hover:bg-hour/90"
+            className="w-full py-4 rounded-2xl bg-hour text-ink font-bold text-lg tracking-wide disabled:opacity-20 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:shadow-hour/20 active:scale-[.98]"
           >
-            Begin exam
+            Begin Exam
           </button>
         </div>
       </div>
     );
   }
 
-  // ─── Ended screen ──────────────────────────────────────────────────────────
+  // ────────────────────── ENDED ──────────────────────
   if (phase === "ended") {
     return (
       <div className="min-h-screen bg-ink flex flex-col items-center justify-center text-center px-6">
-        <h1 className="font-display text-3xl text-ivory mb-3">
-          {endReason === "completed" ? "Exam submitted" : "Exam ended"}
+        <div className="w-16 h-16 rounded-full bg-hour/20 flex items-center justify-center mb-6">
+          <span className="text-hour text-3xl">{endReason === "completed" ? "✓" : "⚠"}</span>
+        </div>
+        <h1 className="font-display text-3xl text-ivory mb-2">
+          {endReason === "completed" ? "Exam Complete" : "Exam Ended"}
         </h1>
-        <p className="text-ash">
+        <p className="text-ash text-sm">
           {endReason === "completed"
             ? "Calculating your score…"
-            : `Ended automatically — ${endReason?.replaceAll("_", " ")}. Redirecting…`}
+            : `Auto-submitted — ${endReason?.replaceAll("_", " ")}. Redirecting…`}
         </p>
       </div>
     );
   }
 
-  // ─── Active exam ───────────────────────────────────────────────────────────
-  const timerPct = question ? (timeLeft / question.time_seconds) * 100 : 100;
-  const timerColor = timerPct > 40 ? "bg-hour" : timerPct > 20 ? "bg-orange-400" : "bg-alert";
-  const isSubmitting = phase === "submitting";
+  // ────────────────────── ACTIVE EXAM ──────────────────────
+  const pct = question ? (timeLeft / question.time_seconds) * 100 : 100;
+  const timerUrgent = pct <= 20;
+  const timerWarn = pct <= 40 && !timerUrgent;
 
   return (
     <div className="h-screen bg-ink flex flex-col overflow-hidden select-none">
-
-      {/* ── Top bar ── */}
-      <div className="flex items-center justify-between px-5 py-3 bg-surface border-b border-surface2 shrink-0">
-        <div className="flex items-center gap-3">
-          <span className="text-ash text-xs font-mono uppercase tracking-widest hidden sm:block">Golden Hour</span>
-          <span className="text-ivory font-mono text-sm">
-            Q <span className="text-hour font-bold">{question.index + 1}</span>
-            <span className="text-ash"> / {question.total}</span>
+      {/* Top bar */}
+      <header className="shrink-0 flex items-center justify-between px-5 py-3 bg-surface border-b border-surface2">
+        <div className="flex items-center gap-4">
+          <span className="text-ash text-xs font-mono tracking-widest hidden sm:block">
+            GOLDEN HOUR
           </span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-ivory font-mono text-sm font-bold">
+              {question.index + 1}
+            </span>
+            <span className="text-ash font-mono text-xs">
+              /{question.total}
+            </span>
+          </div>
         </div>
 
-        <div className="font-mono text-3xl font-bold tabular-nums" style={{
-          color: timerPct > 40 ? '#E8A33D' : timerPct > 20 ? '#fb923c' : '#C84B31'
-        }}>
+        <div
+          className={`font-mono text-3xl font-black tabular-nums transition-colors ${
+            timerUrgent ? "text-alert animate-pulse" : timerWarn ? "text-orange-400" : "text-hour"
+          }`}
+        >
           {timeLeft}
         </div>
 
         <ProctorCamera onFlag={handleFlag} includeSnapshots />
-      </div>
+      </header>
 
-      {/* ── Timer bar ── */}
-      <div className="h-1.5 w-full bg-surface2 shrink-0">
+      {/* Timer bar */}
+      <div className="shrink-0 h-1 bg-surface2">
         <div
-          className={`h-full transition-none ${timerColor}`}
-          style={{ width: `${timerPct}%`, transition: "width 1s linear" }}
+          className={`h-full transition-[width] duration-1000 linear rounded-r-full ${
+            timerUrgent ? "bg-alert" : timerWarn ? "bg-orange-400" : "bg-hour"
+          }`}
+          style={{ width: `${pct}%` }}
         />
       </div>
 
-      {/* ── Question + options ── */}
-      <div className="flex-1 overflow-y-auto flex flex-col">
-        <div className="flex-1 flex flex-col max-w-2xl w-full mx-auto px-5 py-6">
-
-          {/* Question text */}
-          <div className="mb-6">
-            <p className={`leading-relaxed text-ivory ${question.type === "code" ? "font-mono text-sm whitespace-pre-wrap bg-surface rounded-xl p-5 border border-surface2" : "text-base"}`}>
+      {/* Content */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-2xl mx-auto px-5 py-6 flex flex-col min-h-full">
+          {/* Question */}
+          <div className="mb-8">
+            <span className="text-hour text-xs font-mono uppercase tracking-widest">
+              Question {question.index + 1}
+            </span>
+            <div
+              className={`mt-3 text-ivory leading-relaxed ${
+                question.prompt.includes("\n")
+                  ? "font-mono text-sm whitespace-pre-wrap bg-surface rounded-xl p-5 border border-surface2"
+                  : "text-lg"
+              }`}
+            >
               {question.prompt}
-            </p>
+            </div>
           </div>
 
           {/* Options */}
           <div className="space-y-3 flex-1">
             {question.options.map((opt, i) => {
-              const isSelected = selected === opt.id;
+              const active = selected === opt.id;
               return (
                 <button
                   key={opt.id}
-                  onClick={() => !isSubmitting && setSelected(opt.id)}
-                  disabled={isSubmitting}
-                  className={`w-full text-left rounded-xl border-2 px-5 py-4 flex items-start gap-4 transition-all duration-150 ${
-                    isSelected
-                      ? "border-hour bg-hour/10 text-ivory shadow-lg shadow-hour/10"
-                      : "border-surface2 bg-surface text-ash hover:border-hourDim hover:text-ivory"
+                  onClick={() => !submitting && setSelected(opt.id)}
+                  disabled={submitting}
+                  className={`group w-full text-left rounded-xl border-2 px-5 py-4 flex items-start gap-4 transition-all duration-100 ${
+                    active
+                      ? "border-hour bg-hour/10 shadow-lg shadow-hour/5"
+                      : "border-surface2 bg-surface hover:border-hourDim/60 hover:bg-surface2"
                   }`}
                 >
-                  <span className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold font-mono mt-0.5 ${
-                    isSelected ? "bg-hour text-ink" : "bg-surface2 text-ash"
-                  }`}>
-                    {OPTION_LABELS[i]}
+                  <span
+                    className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold font-mono transition-colors ${
+                      active
+                        ? "bg-hour text-ink"
+                        : "bg-surface2 text-ash group-hover:text-ivory"
+                    }`}
+                  >
+                    {LABELS[i]}
                   </span>
-                  <span className="text-sm leading-relaxed pt-0.5">{opt.text}</span>
+                  <span
+                    className={`text-sm leading-relaxed pt-1 transition-colors ${
+                      active ? "text-ivory" : "text-ash group-hover:text-ivory"
+                    }`}
+                  >
+                    {opt.text}
+                  </span>
                 </button>
               );
             })}
           </div>
 
-          {/* Confirm button */}
-          <div className="mt-6 space-y-2">
-            {error && <p className="text-alert text-xs text-center">{error}</p>}
+          {/* Confirm */}
+          <div className="mt-8 pb-4">
+            {error && (
+              <p className="text-alert text-xs text-center mb-3">{error}</p>
+            )}
             <button
               onClick={() => advance(selected, false)}
-              disabled={!selected || isSubmitting}
-              className="w-full py-4 rounded-xl font-semibold text-ink bg-hour disabled:opacity-25 disabled:cursor-not-allowed transition hover:bg-hour/90 text-base"
+              disabled={!selected || submitting}
+              className="w-full py-4 rounded-xl font-bold text-ink bg-hour text-base disabled:opacity-20 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:shadow-hour/20 active:scale-[.98]"
             >
-              {isSubmitting ? "Saving…" : "Confirm answer →"}
+              {submitting ? "Saving…" : "Confirm →"}
             </button>
-            <p className="text-center text-xs text-ash/60">No going back — choose carefully</p>
+            <p className="text-center text-xs text-ash/40 mt-3 tracking-wide">
+              No going back
+            </p>
           </div>
-
         </div>
-      </div>
+      </main>
     </div>
   );
 }

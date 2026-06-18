@@ -36,3 +36,10 @@ update exams set
   code_time_seconds = 15,
   objective_count = 25,
   code_count = 0;
+
+-- 4. Allow retakes: drop the old unique constraint and add a partial one
+--    that only prevents duplicates for active/completed sessions, not reset ones.
+alter table exam_sessions drop constraint if exists exam_sessions_exam_id_student_id_key;
+create unique index if not exists exam_sessions_active_unique
+  on exam_sessions (exam_id, student_id)
+  where (status != 'reset');

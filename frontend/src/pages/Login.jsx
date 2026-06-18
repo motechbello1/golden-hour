@@ -13,56 +13,53 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (signInError) {
-      setError(signInError.message);
-      return;
-    }
+    if (err) { setError(err.message); return; }
     navigate("/track");
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-5">
-        <div>
-          <h1 className="font-display text-3xl text-ivory">Golden Hour</h1>
-          <p className="text-ash text-sm mt-1">Log in to continue your assessment.</p>
+    <div className="min-h-screen bg-ink flex items-center justify-center px-5">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <Link to="/" className="text-hour text-xs font-mono uppercase tracking-[.25em]">ICBM Bootcamp</Link>
+          <h1 className="font-display text-3xl text-ivory mt-2">Welcome back</h1>
+          <p className="text-ash text-sm mt-1">Log in to continue your assessment</p>
         </div>
 
-        <div className="space-y-3">
-          <input
-            required
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg bg-surface border border-hourDim/30 px-4 py-2.5 text-ivory placeholder:text-ash focus:outline-none focus:ring-2 focus:ring-hour"
-          />
-          <input
-            required
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg bg-surface border border-hourDim/30 px-4 py-2.5 text-ivory placeholder:text-ash focus:outline-none focus:ring-2 focus:ring-hour"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-ash text-xs uppercase tracking-wider block mb-1.5">Email</label>
+            <input
+              required type="email" value={email} onChange={e => setEmail(e.target.value)}
+              className="w-full rounded-xl bg-surface border border-surface2 px-4 py-3 text-ivory placeholder:text-ash/50 focus:outline-none focus:ring-2 focus:ring-hour focus:border-transparent transition"
+              placeholder="you@example.com"
+            />
+          </div>
+          <div>
+            <label className="text-ash text-xs uppercase tracking-wider block mb-1.5">Password</label>
+            <input
+              required type="password" value={password} onChange={e => setPassword(e.target.value)}
+              className="w-full rounded-xl bg-surface border border-surface2 px-4 py-3 text-ivory placeholder:text-ash/50 focus:outline-none focus:ring-2 focus:ring-hour focus:border-transparent transition"
+              placeholder="••••••••"
+            />
+          </div>
 
-        {error && <p className="text-alert text-sm">{error}</p>}
+          {error && <p className="text-alert text-sm bg-alert/10 rounded-lg px-4 py-2">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-hour text-ink font-medium py-2.5 hover:bg-hour/90 disabled:opacity-50"
-        >
-          {loading ? "Logging in…" : "Log in"}
-        </button>
+          <button
+            type="submit" disabled={loading}
+            className="w-full py-3.5 rounded-xl bg-hour text-ink font-bold text-base disabled:opacity-50 transition hover:shadow-lg hover:shadow-hour/20 active:scale-[.98]"
+          >
+            {loading ? "Logging in…" : "Log in"}
+          </button>
+        </form>
 
-        <p className="text-center text-sm text-ash">
-          New here? <Link to="/register" className="text-hour hover:underline">Register</Link>
+        <p className="text-center text-sm text-ash mt-6">
+          New here? <Link to="/register" className="text-hour hover:underline font-medium">Register</Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }
