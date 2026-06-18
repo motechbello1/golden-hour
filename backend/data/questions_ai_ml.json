@@ -1,44 +1,2402 @@
 [
-  {"type": "objective", "difficulty": "easy", "prompt": "Which of these is a supervised learning task?", "options": [{"id": "a", "text": "Customer segmentation with k-means"}, {"id": "b", "text": "Predicting house prices from labeled sales data"}, {"id": "c", "text": "Reducing dimensions with PCA"}, {"id": "d", "text": "Finding anomalies with no labels"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Overfitting means a model:", "options": [{"id": "a", "text": "Performs well on training data but poorly on unseen data"}, {"id": "b", "text": "Performs poorly on both training and test data"}, {"id": "c", "text": "Trains too slowly to be useful"}, {"id": "d", "text": "Has too few parameters to learn patterns"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which metric is most appropriate for a highly imbalanced binary classification problem?", "options": [{"id": "a", "text": "Accuracy"}, {"id": "b", "text": "F1 score"}, {"id": "c", "text": "Mean squared error"}, {"id": "d", "text": "R-squared"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "In a confusion matrix, a false positive is:", "options": [{"id": "a", "text": "Predicted negative, actually negative"}, {"id": "b", "text": "Predicted positive, actually positive"}, {"id": "c", "text": "Predicted positive, actually negative"}, {"id": "d", "text": "Predicted negative, actually positive"}], "correct_option_id": "c"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which activation function outputs values strictly between 0 and 1?", "options": [{"id": "a", "text": "ReLU"}, {"id": "b", "text": "Sigmoid"}, {"id": "c", "text": "Tanh"}, {"id": "d", "text": "Linear"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "L2 regularization adds a penalty based on:", "options": [{"id": "a", "text": "The number of training epochs"}, {"id": "b", "text": "The sum of squared weights"}, {"id": "c", "text": "The size of the test set"}, {"id": "d", "text": "The learning rate schedule"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which of these is an unsupervised learning algorithm?", "options": [{"id": "a", "text": "Logistic regression"}, {"id": "b", "text": "Random forest classifier"}, {"id": "c", "text": "K-means clustering"}, {"id": "d", "text": "Support vector machine"}], "correct_option_id": "c"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Gradient descent updates model weights in the direction that:", "options": [{"id": "a", "text": "Maximizes the loss"}, {"id": "b", "text": "Minimizes the loss"}, {"id": "c", "text": "Keeps weights unchanged"}, {"id": "d", "text": "Randomizes the weights"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "A validation set is used to:", "options": [{"id": "a", "text": "Train the final model weights"}, {"id": "b", "text": "Tune hyperparameters and check for overfitting during training"}, {"id": "c", "text": "Replace the need for a test set entirely"}, {"id": "d", "text": "Store the raw, unprocessed data"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which technique helps reduce overfitting in neural networks by randomly disabling units during training?", "options": [{"id": "a", "text": "Batch normalization"}, {"id": "b", "text": "Dropout"}, {"id": "c", "text": "One-hot encoding"}, {"id": "d", "text": "Gradient clipping"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "In NLP, what does TF-IDF primarily measure?", "options": [{"id": "a", "text": "How important a word is to a document relative to a corpus"}, {"id": "b", "text": "The grammatical structure of a sentence"}, {"id": "c", "text": "The sentiment polarity of a word"}, {"id": "d", "text": "The number of unique characters in a document"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Precision answers which question?", "options": [{"id": "a", "text": "Of all actual positives, how many did we catch?"}, {"id": "b", "text": "Of all predicted positives, how many were actually correct?"}, {"id": "c", "text": "What fraction of all predictions were correct?"}, {"id": "d", "text": "How fast did the model train?"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which of these is NOT a kernel commonly used with SVMs?", "options": [{"id": "a", "text": "Linear"}, {"id": "b", "text": "Polynomial"}, {"id": "c", "text": "Radial basis function (RBF)"}, {"id": "d", "text": "Softmax"}], "correct_option_id": "d"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Standardizing a feature typically means transforming it to have:", "options": [{"id": "a", "text": "Mean 0 and standard deviation 1"}, {"id": "b", "text": "Values strictly between 0 and 1"}, {"id": "c", "text": "Only integer values"}, {"id": "d", "text": "A fixed mean of 100"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which of these best describes a decision tree's main weakness?", "options": [{"id": "a", "text": "It cannot handle categorical features"}, {"id": "b", "text": "It tends to overfit if grown too deep"}, {"id": "c", "text": "It requires the data to be linearly separable"}, {"id": "d", "text": "It cannot be used for classification"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Bagging (e.g. random forests) primarily reduces:", "options": [{"id": "a", "text": "Bias"}, {"id": "b", "text": "Variance"}, {"id": "c", "text": "Training data size"}, {"id": "d", "text": "Feature count"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "What is the purpose of a train/test split?", "options": [{"id": "a", "text": "To estimate how the model performs on unseen data"}, {"id": "b", "text": "To double the size of the dataset"}, {"id": "c", "text": "To remove the need for labels"}, {"id": "d", "text": "To speed up data collection"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which loss function is most appropriate for multi-class classification?", "options": [{"id": "a", "text": "Mean squared error"}, {"id": "b", "text": "Categorical cross-entropy"}, {"id": "c", "text": "Hinge loss for regression"}, {"id": "d", "text": "Huber loss"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "One-hot encoding is used to:", "options": [{"id": "a", "text": "Convert categorical variables into a numeric format models can use"}, {"id": "b", "text": "Normalize numeric ranges"}, {"id": "c", "text": "Remove missing values"}, {"id": "d", "text": "Compress image data"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Batch normalization is primarily used to:", "options": [{"id": "a", "text": "Stabilize and speed up training by normalizing layer inputs"}, {"id": "b", "text": "Encode categorical labels"}, {"id": "c", "text": "Replace the need for an optimizer"}, {"id": "d", "text": "Reduce the number of training samples needed"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which of these is a common cause of data leakage?", "options": [{"id": "a", "text": "Splitting data before any preprocessing"}, {"id": "b", "text": "Fitting a scaler on the full dataset before splitting into train/test"}, {"id": "c", "text": "Using cross-validation"}, {"id": "d", "text": "Shuffling the dataset before splitting"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "A learning rate that is too high during training typically causes:", "options": [{"id": "a", "text": "Very slow but stable convergence"}, {"id": "b", "text": "The loss to oscillate or diverge"}, {"id": "c", "text": "Guaranteed convergence to the global minimum"}, {"id": "d", "text": "No effect on training"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which of these best describes transfer learning?", "options": [{"id": "a", "text": "Training a model from scratch on a brand new dataset every time"}, {"id": "b", "text": "Reusing a model pretrained on one task as a starting point for another"}, {"id": "c", "text": "Transferring data between two databases"}, {"id": "d", "text": "Manually copying weights between unrelated architectures with no fine-tuning"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "In a CNN, what is the main purpose of a pooling layer?", "options": [{"id": "a", "text": "To increase the spatial resolution of feature maps"}, {"id": "b", "text": "To downsample feature maps and reduce computation"}, {"id": "c", "text": "To add more trainable parameters"}, {"id": "d", "text": "To convert images to grayscale"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which evaluation metric is most appropriate for a regression task predicting house prices?", "options": [{"id": "a", "text": "F1 score"}, {"id": "b", "text": "Root mean squared error (RMSE)"}, {"id": "c", "text": "Accuracy"}, {"id": "d", "text": "AUC-ROC"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "What does the term 'epoch' refer to in model training?", "options": [{"id": "a", "text": "One full pass through the entire training dataset"}, {"id": "b", "text": "A single weight update"}, {"id": "c", "text": "The final evaluation step"}, {"id": "d", "text": "A type of activation function"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which of these is a sign of underfitting?", "options": [{"id": "a", "text": "Low training error, high test error"}, {"id": "b", "text": "High training error and high test error"}, {"id": "c", "text": "Zero error on both training and test sets"}, {"id": "d", "text": "Training error decreasing indefinitely"}], "correct_option_id": "b"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Cosine similarity is commonly used to measure:", "options": [{"id": "a", "text": "The angle-based similarity between two vectors, e.g. word embeddings"}, {"id": "b", "text": "The Euclidean distance between two points only"}, {"id": "c", "text": "The accuracy of a classifier"}, {"id": "d", "text": "The number of layers in a network"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "Which of these best describes k-fold cross-validation?", "options": [{"id": "a", "text": "Splitting data into k parts and rotating which part is the validation set"}, {"id": "b", "text": "Training k completely independent models on k different problems"}, {"id": "c", "text": "Running the model k times on the same fixed split"}, {"id": "d", "text": "A method only usable for unsupervised learning"}], "correct_option_id": "a"},
-  {"type": "objective", "difficulty": "easy", "prompt": "What is the vanishing gradient problem most associated with?", "options": [{"id": "a", "text": "Very deep networks where gradients shrink to near zero during backpropagation"}, {"id": "b", "text": "Datasets that are too small to train on"}, {"id": "c", "text": "Using too few features"}, {"id": "d", "text": "Overly aggressive data augmentation"}], "correct_option_id": "a"},
-  {"type": "code", "difficulty": "medium", "prompt": "What does this code output?\n\nimport numpy as np\na = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\nprint(a @ b)", "options": [{"id": "a", "text": "32"}, {"id": "b", "text": "[4, 10, 18]"}, {"id": "c", "text": "15"}, {"id": "d", "text": "Error"}], "correct_option_id": "a"},
-  {"type": "code", "difficulty": "medium", "prompt": "What is the shape of X after this code runs?\n\nimport numpy as np\nX = np.zeros((3, 4))\nX = X.reshape(2, 6)\nprint(X.shape)", "options": [{"id": "a", "text": "(3, 4)"}, {"id": "b", "text": "(2, 6)"}, {"id": "c", "text": "(6, 2)"}, {"id": "d", "text": "Error, reshape fails"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "train_test_split(X, y, test_size=0.2) sends what share of the data to the test set?", "options": [{"id": "a", "text": "2%"}, {"id": "b", "text": "20%"}, {"id": "c", "text": "80%"}, {"id": "d", "text": "Exactly 0.2 rows"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "For a binary sklearn classifier, model.predict_proba(X)[:, 1] returns:", "options": [{"id": "a", "text": "The predicted class label (0 or 1)"}, {"id": "b", "text": "The predicted probability of class 1 for each sample"}, {"id": "c", "text": "The model's accuracy score"}, {"id": "d", "text": "The feature importances"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "df['age'] = df['age'].fillna(df['age'].mean()) does what?", "options": [{"id": "a", "text": "Deletes all rows with a missing age"}, {"id": "b", "text": "Replaces missing age values with the column mean"}, {"id": "c", "text": "Replaces every age value with the mean, including non-missing ones"}, {"id": "d", "text": "Raises an error if any value is missing"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "What is the output?\n\nimport numpy as np\nprint(np.argmax([0.1, 0.7, 0.2]))", "options": [{"id": "a", "text": "0"}, {"id": "b", "text": "1"}, {"id": "c", "text": "2"}, {"id": "d", "text": "0.7"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy']) does what?", "options": [{"id": "a", "text": "Trains the model for one epoch"}, {"id": "b", "text": "Configures the optimizer, loss, and tracked metric before training"}, {"id": "c", "text": "Saves the model to disk"}, {"id": "d", "text": "Evaluates the model on test data"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "StandardScaler().fit_transform(X) transforms each feature column to have:", "options": [{"id": "a", "text": "Mean 0 and standard deviation 1"}, {"id": "b", "text": "Values between 0 and 1 only"}, {"id": "c", "text": "Integer values only"}, {"id": "d", "text": "The same values, unchanged"}], "correct_option_id": "a"},
-  {"type": "code", "difficulty": "medium", "prompt": "What is printed?\n\nimport numpy as np\na = np.array([[1, 2], [3, 4]])\nprint(a.sum(axis=0))", "options": [{"id": "a", "text": "[3 7]"}, {"id": "b", "text": "[4 6]"}, {"id": "c", "text": "10"}, {"id": "d", "text": "[1 2 3 4]"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "pd.get_dummies(df['color']) produces:", "options": [{"id": "a", "text": "A single numeric column encoding each color as an integer"}, {"id": "b", "text": "One binary column per unique color value"}, {"id": "c", "text": "A sorted list of unique colors"}, {"id": "d", "text": "The most frequent color only"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "Setting random_state=42 in a scikit-learn function ensures:", "options": [{"id": "a", "text": "The model trains faster"}, {"id": "b", "text": "Reproducible results across runs"}, {"id": "c", "text": "Higher accuracy"}, {"id": "d", "text": "The data is shuffled differently every run"}], "correct_option_id": "b"},
-  {"type": "code", "difficulty": "medium", "prompt": "accuracy_score(y_true, y_pred) computes:", "options": [{"id": "a", "text": "The proportion of predictions that exactly match the true labels"}, {"id": "b", "text": "The average prediction confidence"}, {"id": "c", "text": "The total number of predictions made"}, {"id": "d", "text": "The model's training time"}], "correct_option_id": "a"}
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What will type(15) return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "<class 'float'>"
+      },
+      {
+        "id": "b",
+        "text": "<class 'int'>"
+      },
+      {
+        "id": "c",
+        "text": "<class 'str'>"
+      },
+      {
+        "id": "d",
+        "text": "<class 'bool'>"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What error does this code cause?\n\nage = '15'\nprint(age + 5)",
+    "options": [
+      {
+        "id": "a",
+        "text": "SyntaxError"
+      },
+      {
+        "id": "b",
+        "text": "TypeError"
+      },
+      {
+        "id": "c",
+        "text": "NameError"
+      },
+      {
+        "id": "d",
+        "text": "ValueError"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does print(float('87')) output?",
+    "options": [
+      {
+        "id": "a",
+        "text": "87.0"
+      },
+      {
+        "id": "b",
+        "text": "87"
+      },
+      {
+        "id": "c",
+        "text": "Error"
+      },
+      {
+        "id": "d",
+        "text": "'87.0'"
+      }
+    ],
+    "correct_option_id": "a"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does bool(0) return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "True"
+      },
+      {
+        "id": "b",
+        "text": "False"
+      },
+      {
+        "id": "c",
+        "text": "0"
+      },
+      {
+        "id": "d",
+        "text": "None"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does print(type(city)) print when city = 'Lagos'?",
+    "options": [
+      {
+        "id": "a",
+        "text": "str"
+      },
+      {
+        "id": "b",
+        "text": "<class 'str'>"
+      },
+      {
+        "id": "c",
+        "text": "'Lagos'"
+      },
+      {
+        "id": "d",
+        "text": "string"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What error does name = Amina (without quotes) raise?",
+    "options": [
+      {
+        "id": "a",
+        "text": "SyntaxError"
+      },
+      {
+        "id": "b",
+        "text": "TypeError"
+      },
+      {
+        "id": "c",
+        "text": "NameError"
+      },
+      {
+        "id": "d",
+        "text": "ValueError"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the output of print('Age:', 5+3)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Age: 5+3"
+      },
+      {
+        "id": "b",
+        "text": "Age: 8"
+      },
+      {
+        "id": "c",
+        "text": "Age:8"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the output of print('A' + 'B')?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A + B"
+      },
+      {
+        "id": "b",
+        "text": "AB"
+      },
+      {
+        "id": "c",
+        "text": "A B"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which f-string correctly prints 'Score: 87.5' given score = 87.5?",
+    "options": [
+      {
+        "id": "a",
+        "text": "print(f'Score: score')"
+      },
+      {
+        "id": "b",
+        "text": "print('Score: ' + score)"
+      },
+      {
+        "id": "c",
+        "text": "print(f'Score: {score}')"
+      },
+      {
+        "id": "d",
+        "text": "print('Score:', {score})"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What type does input() always return, no matter what the user types?",
+    "options": [
+      {
+        "id": "a",
+        "text": "int"
+      },
+      {
+        "id": "b",
+        "text": "float"
+      },
+      {
+        "id": "c",
+        "text": "str"
+      },
+      {
+        "id": "d",
+        "text": "bool"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does f'{avg:.1f}' print when avg = 83.666?",
+    "options": [
+      {
+        "id": "a",
+        "text": "83.666"
+      },
+      {
+        "id": "b",
+        "text": "83.6"
+      },
+      {
+        "id": "c",
+        "text": "83.7"
+      },
+      {
+        "id": "d",
+        "text": "84"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does f'{price:.2f}' print when price = 1500.0?",
+    "options": [
+      {
+        "id": "a",
+        "text": "1500"
+      },
+      {
+        "id": "b",
+        "text": "1500.0"
+      },
+      {
+        "id": "c",
+        "text": "1500.00"
+      },
+      {
+        "id": "d",
+        "text": "1,500.00"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which line correctly asks for age and converts it to an integer in one step?",
+    "options": [
+      {
+        "id": "a",
+        "text": "age = input(int('Enter your age: '))"
+      },
+      {
+        "id": "b",
+        "text": "age = int(input('Enter your age: '))"
+      },
+      {
+        "id": "c",
+        "text": "age = integer(input('Enter your age: '))"
+      },
+      {
+        "id": "d",
+        "text": "int(age = input('Enter your age: '))"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is 15 // 4 in Python?",
+    "options": [
+      {
+        "id": "a",
+        "text": "3.75"
+      },
+      {
+        "id": "b",
+        "text": "3"
+      },
+      {
+        "id": "c",
+        "text": "4"
+      },
+      {
+        "id": "d",
+        "text": "1"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is 15 % 4?",
+    "options": [
+      {
+        "id": "a",
+        "text": "3.75"
+      },
+      {
+        "id": "b",
+        "text": "4"
+      },
+      {
+        "id": "c",
+        "text": "3"
+      },
+      {
+        "id": "d",
+        "text": "0"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the difference between = and == in Python?",
+    "options": [
+      {
+        "id": "a",
+        "text": "= compares, == assigns"
+      },
+      {
+        "id": "b",
+        "text": "= assigns a value, == compares two values"
+      },
+      {
+        "id": "c",
+        "text": "They do the same thing"
+      },
+      {
+        "id": "d",
+        "text": "== is only for strings"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does 5 != 3 evaluate to?",
+    "options": [
+      {
+        "id": "a",
+        "text": "False"
+      },
+      {
+        "id": "b",
+        "text": "True"
+      },
+      {
+        "id": "c",
+        "text": "0"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which condition correctly checks if num is even?",
+    "options": [
+      {
+        "id": "a",
+        "text": "if num % 2 == 1:"
+      },
+      {
+        "id": "b",
+        "text": "if num / 2 == 0:"
+      },
+      {
+        "id": "c",
+        "text": "if num % 2 == 0:"
+      },
+      {
+        "id": "d",
+        "text": "if num // 2 == 0:"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does True and False evaluate to?",
+    "options": [
+      {
+        "id": "a",
+        "text": "True"
+      },
+      {
+        "id": "b",
+        "text": "False"
+      },
+      {
+        "id": "c",
+        "text": "None"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does not True evaluate to?",
+    "options": [
+      {
+        "id": "a",
+        "text": "True"
+      },
+      {
+        "id": "b",
+        "text": "None"
+      },
+      {
+        "id": "c",
+        "text": "0"
+      },
+      {
+        "id": "d",
+        "text": "False"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is wrong with this code?\n\nif score = 70:",
+    "options": [
+      {
+        "id": "a",
+        "text": "Missing colon"
+      },
+      {
+        "id": "b",
+        "text": "Should use == not ="
+      },
+      {
+        "id": "c",
+        "text": "score is not defined"
+      },
+      {
+        "id": "d",
+        "text": "Nothing is wrong"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "In an if/elif chain checking score>=70, then >=60, then >=50, what grade does a score of 65 receive?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Grade A"
+      },
+      {
+        "id": "b",
+        "text": "Grade B"
+      },
+      {
+        "id": "c",
+        "text": "Grade C"
+      },
+      {
+        "id": "d",
+        "text": "Grade F"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What will this code print?\n\nif 5 > 3:\n    print('Yes')\nelse:\n    print('No')",
+    "options": [
+      {
+        "id": "a",
+        "text": "No"
+      },
+      {
+        "id": "b",
+        "text": "True"
+      },
+      {
+        "id": "c",
+        "text": "Yes"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "Why must conditions in an if/elif chain be ordered from highest to lowest when ranges overlap?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Python requires it as a syntax rule"
+      },
+      {
+        "id": "b",
+        "text": "Python checks top to bottom and stops at the first True, so a lower threshold first would wrongly catch higher values"
+      },
+      {
+        "id": "c",
+        "text": "It makes code run faster"
+      },
+      {
+        "id": "d",
+        "text": "The else clause won't work otherwise"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does this print?\n\nage = 20\nif age >= 18 and age < 65:\n    print('Eligible')\nelse:\n    print('Not eligible')",
+    "options": [
+      {
+        "id": "a",
+        "text": "Not eligible"
+      },
+      {
+        "id": "b",
+        "text": "Eligible"
+      },
+      {
+        "id": "c",
+        "text": "True"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is a nested if?",
+    "options": [
+      {
+        "id": "a",
+        "text": "An if inside a for loop"
+      },
+      {
+        "id": "b",
+        "text": "An if statement placed inside another if statement"
+      },
+      {
+        "id": "c",
+        "text": "Two if statements on the same line"
+      },
+      {
+        "id": "d",
+        "text": "An if without an else"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the correct indentation depth for code inside a nested if's inner block?",
+    "options": [
+      {
+        "id": "a",
+        "text": "4 spaces (one level)"
+      },
+      {
+        "id": "b",
+        "text": "8 spaces (two levels)"
+      },
+      {
+        "id": "c",
+        "text": "2 spaces"
+      },
+      {
+        "id": "d",
+        "text": "No indentation needed"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "score=75, attendance=60.\n\nif score >= 70:\n    if attendance >= 75:\n        print('Distinction')\n    else:\n        print('Pass')\nelse:\n    print('Fail')\n\nWhat is printed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Distinction"
+      },
+      {
+        "id": "b",
+        "text": "Pass"
+      },
+      {
+        "id": "c",
+        "text": "Fail"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "What does this print?\n\nx = 10\nif x > 5:\n    if x > 8:\n        print('Big')\n    else:\n        print('Medium')\nelse:\n    print('Small')",
+    "options": [
+      {
+        "id": "a",
+        "text": "Small"
+      },
+      {
+        "id": "b",
+        "text": "Medium"
+      },
+      {
+        "id": "c",
+        "text": "Big"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does range(5) produce?",
+    "options": [
+      {
+        "id": "a",
+        "text": "1,2,3,4,5"
+      },
+      {
+        "id": "b",
+        "text": "0,1,2,3,4,5"
+      },
+      {
+        "id": "c",
+        "text": "0,1,2,3,4"
+      },
+      {
+        "id": "d",
+        "text": "1,2,3,4"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does range(1,6) produce?",
+    "options": [
+      {
+        "id": "a",
+        "text": "1,2,3,4,5,6"
+      },
+      {
+        "id": "b",
+        "text": "0,1,2,3,4,5"
+      },
+      {
+        "id": "c",
+        "text": "1,2,3,4,5"
+      },
+      {
+        "id": "d",
+        "text": "1,2,3,4"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does range(0,10,2) produce?",
+    "options": [
+      {
+        "id": "a",
+        "text": "0,2,4,6,8,10"
+      },
+      {
+        "id": "b",
+        "text": "2,4,6,8"
+      },
+      {
+        "id": "c",
+        "text": "0,2,4,6,8"
+      },
+      {
+        "id": "d",
+        "text": "1,3,5,7,9"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which range() call counts down from 10 to 1 inclusive?",
+    "options": [
+      {
+        "id": "a",
+        "text": "range(10,0)"
+      },
+      {
+        "id": "b",
+        "text": "range(10,1,-1)"
+      },
+      {
+        "id": "c",
+        "text": "range(10,0,-1)"
+      },
+      {
+        "id": "d",
+        "text": "range(10,-1,-1)"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which for loop correctly prints 'Hello' exactly 5 times?",
+    "options": [
+      {
+        "id": "a",
+        "text": "for i in range(1,5): print('Hello')"
+      },
+      {
+        "id": "b",
+        "text": "for i in range(5): print('Hello')"
+      },
+      {
+        "id": "c",
+        "text": "for i in range(0,6): print('Hello')"
+      },
+      {
+        "id": "d",
+        "text": "for i in 5: print('Hello')"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does this print?\n\ntotal = 0\nfor i in range(1, 6):\n    total += i\nprint(total)",
+    "options": [
+      {
+        "id": "a",
+        "text": "10"
+      },
+      {
+        "id": "b",
+        "text": "14"
+      },
+      {
+        "id": "c",
+        "text": "15"
+      },
+      {
+        "id": "d",
+        "text": "21"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Why must total=0 be written BEFORE a for loop that accumulates a running sum?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Python requires variables to start with 0"
+      },
+      {
+        "id": "b",
+        "text": "Writing it inside the loop resets total to 0 every pass, losing the running sum"
+      },
+      {
+        "id": "c",
+        "text": "The loop won't run without it"
+      },
+      {
+        "id": "d",
+        "text": "It makes the loop run faster"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which loop prints only even numbers from 2 to 10 inclusive?",
+    "options": [
+      {
+        "id": "a",
+        "text": "for i in range(2,10,2): print(i)"
+      },
+      {
+        "id": "b",
+        "text": "for i in range(2,11,2): print(i)"
+      },
+      {
+        "id": "c",
+        "text": "for i in range(0,11,2): print(i)"
+      },
+      {
+        "id": "d",
+        "text": "for i in range(2,12,2): print(i)"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the main difference between a for loop and a while loop?",
+    "options": [
+      {
+        "id": "a",
+        "text": "for loops run faster"
+      },
+      {
+        "id": "b",
+        "text": "A for loop runs over a known range; a while loop runs while a condition stays True"
+      },
+      {
+        "id": "c",
+        "text": "while loops can only use numbers"
+      },
+      {
+        "id": "d",
+        "text": "for loops cannot be nested"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What usually causes an infinite while loop?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Using range() with no arguments"
+      },
+      {
+        "id": "b",
+        "text": "Forgetting to update the loop variable inside the while body"
+      },
+      {
+        "id": "c",
+        "text": "Using break inside a loop"
+      },
+      {
+        "id": "d",
+        "text": "Too many iterations"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does break do inside a loop?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Skips the current iteration"
+      },
+      {
+        "id": "b",
+        "text": "Pauses the loop"
+      },
+      {
+        "id": "c",
+        "text": "Immediately exits the entire loop"
+      },
+      {
+        "id": "d",
+        "text": "Restarts from the beginning"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does continue do inside a loop?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Exits the loop immediately"
+      },
+      {
+        "id": "b",
+        "text": "Skips the rest of the current pass and jumps to the next iteration"
+      },
+      {
+        "id": "c",
+        "text": "Pauses execution"
+      },
+      {
+        "id": "d",
+        "text": "Goes to the start of the loop body"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which while loop correctly keeps asking until the user enters a number greater than 0?",
+    "options": [
+      {
+        "id": "a",
+        "text": "while num > 0:\n    num = int(input('Enter: '))"
+      },
+      {
+        "id": "b",
+        "text": "while num >= 0:\n    num = int(input('Enter: '))"
+      },
+      {
+        "id": "c",
+        "text": "num = -1\nwhile num <= 0:\n    num = int(input('Enter: '))"
+      },
+      {
+        "id": "d",
+        "text": "while True:\n    num = int(input('Enter: '))"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you access the last item of a list called fruits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "fruits[last]"
+      },
+      {
+        "id": "b",
+        "text": "fruits[-1]"
+      },
+      {
+        "id": "c",
+        "text": "fruits[len(fruits)]"
+      },
+      {
+        "id": "d",
+        "text": "fruits.last()"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does fruits[1:3] return if fruits = ['a','b','c','d']?",
+    "options": [
+      {
+        "id": "a",
+        "text": "['a','b','c']"
+      },
+      {
+        "id": "b",
+        "text": "['b','c','d']"
+      },
+      {
+        "id": "c",
+        "text": "['b','c']"
+      },
+      {
+        "id": "d",
+        "text": "['a','b']"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the difference between .append() and .insert()?",
+    "options": [
+      {
+        "id": "a",
+        "text": "append adds to the front, insert to the end"
+      },
+      {
+        "id": "b",
+        "text": "append adds to the end; insert adds at a specific position"
+      },
+      {
+        "id": "c",
+        "text": "They do the same thing"
+      },
+      {
+        "id": "d",
+        "text": "insert is faster"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does .pop() do by default on a list?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Removes and returns the first item"
+      },
+      {
+        "id": "b",
+        "text": "Removes and returns the last item"
+      },
+      {
+        "id": "c",
+        "text": "Removes all items"
+      },
+      {
+        "id": "d",
+        "text": "Returns the last item without removing it"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you sort a list my_list in descending order?",
+    "options": [
+      {
+        "id": "a",
+        "text": "my_list.sort()"
+      },
+      {
+        "id": "b",
+        "text": "sorted(my_list, reverse=True)"
+      },
+      {
+        "id": "c",
+        "text": "my_list.sort(reverse=True)"
+      },
+      {
+        "id": "d",
+        "text": "my_list.reverse()"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the key difference between .sort() and sorted()?",
+    "options": [
+      {
+        "id": "a",
+        "text": "sorted() is faster"
+      },
+      {
+        "id": "b",
+        "text": ".sort() modifies the original list; sorted() returns a new sorted list"
+      },
+      {
+        "id": "c",
+        "text": "sorted() handles numbers only"
+      },
+      {
+        "id": "d",
+        "text": ".sort() returns a new list"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which code checks if 'apple' exists in a list called fruits?",
+    "options": [
+      {
+        "id": "a",
+        "text": "if fruits.contains('apple'):"
+      },
+      {
+        "id": "b",
+        "text": "if 'apple' == fruits:"
+      },
+      {
+        "id": "c",
+        "text": "if 'apple' in fruits:"
+      },
+      {
+        "id": "d",
+        "text": "if fruits.find('apple'):"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you safely get a value from a dictionary without crashing if the key doesn't exist?",
+    "options": [
+      {
+        "id": "a",
+        "text": "dictionary['key']"
+      },
+      {
+        "id": "b",
+        "text": "dictionary.get('key', 'default')"
+      },
+      {
+        "id": "c",
+        "text": "dictionary.fetch('key')"
+      },
+      {
+        "id": "d",
+        "text": "try: dictionary['key']"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does .items() return when looping through a dictionary?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Only the keys"
+      },
+      {
+        "id": "b",
+        "text": "Only the values"
+      },
+      {
+        "id": "c",
+        "text": "Each key-value pair as a tuple"
+      },
+      {
+        "id": "d",
+        "text": "A list of all values"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you add a new key-value pair to a dictionary d?",
+    "options": [
+      {
+        "id": "a",
+        "text": "d.add('new_key', value)"
+      },
+      {
+        "id": "b",
+        "text": "d.insert('new_key', value)"
+      },
+      {
+        "id": "c",
+        "text": "d['new_key'] = value"
+      },
+      {
+        "id": "d",
+        "text": "d.append({'new_key': value})"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you delete a key 'age' from a dictionary d?",
+    "options": [
+      {
+        "id": "a",
+        "text": "d.remove('age')"
+      },
+      {
+        "id": "b",
+        "text": "del d['age']"
+      },
+      {
+        "id": "c",
+        "text": "d.delete('age')"
+      },
+      {
+        "id": "d",
+        "text": "d.pop_key('age')"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What happens if you create a dictionary with two identical keys?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Python raises a KeyError"
+      },
+      {
+        "id": "b",
+        "text": "Both values are stored in a list"
+      },
+      {
+        "id": "c",
+        "text": "The second value silently overwrites the first"
+      },
+      {
+        "id": "d",
+        "text": "Python raises a SyntaxError"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which code prints all keys in a dictionary called student?",
+    "options": [
+      {
+        "id": "a",
+        "text": "print(student.values())"
+      },
+      {
+        "id": "b",
+        "text": "print(student.items())"
+      },
+      {
+        "id": "c",
+        "text": "print(student.keys())"
+      },
+      {
+        "id": "d",
+        "text": "print(keys(student))"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the difference between a parameter and an argument?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They are the same thing"
+      },
+      {
+        "id": "b",
+        "text": "A parameter is in the function definition; an argument is the value passed when calling"
+      },
+      {
+        "id": "c",
+        "text": "An argument is defined in the function; a parameter is passed in"
+      },
+      {
+        "id": "d",
+        "text": "Parameters are for methods, arguments for functions"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does a function return if it has no explicit return statement?",
+    "options": [
+      {
+        "id": "a",
+        "text": "0"
+      },
+      {
+        "id": "b",
+        "text": "False"
+      },
+      {
+        "id": "c",
+        "text": "None"
+      },
+      {
+        "id": "d",
+        "text": "An empty string"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which function correctly takes a number and returns its square?",
+    "options": [
+      {
+        "id": "a",
+        "text": "def square(n): print(n**2)"
+      },
+      {
+        "id": "b",
+        "text": "def square(n): return n*2"
+      },
+      {
+        "id": "c",
+        "text": "def square(n): return n**2"
+      },
+      {
+        "id": "d",
+        "text": "def square(): return n**2"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is a default parameter?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A parameter that must always be provided"
+      },
+      {
+        "id": "b",
+        "text": "A parameter with a preset value used when the caller doesn't supply one"
+      },
+      {
+        "id": "c",
+        "text": "The first parameter in any function"
+      },
+      {
+        "id": "d",
+        "text": "A parameter that prints its default value"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Why must a function be defined before it is called in Python?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Python requires alphabetical order"
+      },
+      {
+        "id": "b",
+        "text": "Python reads top to bottom; calling before defining causes a NameError"
+      },
+      {
+        "id": "c",
+        "text": "The function will run twice otherwise"
+      },
+      {
+        "id": "d",
+        "text": "Only required for recursive functions"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the key difference between a function that prints a value and one that returns a value?",
+    "options": [
+      {
+        "id": "a",
+        "text": "No difference"
+      },
+      {
+        "id": "b",
+        "text": "print() sends data to other functions; return shows it on screen"
+      },
+      {
+        "id": "c",
+        "text": "print() displays output on screen; return sends the value back to the caller for reuse"
+      },
+      {
+        "id": "d",
+        "text": "return is slower than print()"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which function correctly returns True if n is even, False otherwise?",
+    "options": [
+      {
+        "id": "a",
+        "text": "def is_even(n): return n % 2 == 1"
+      },
+      {
+        "id": "b",
+        "text": "def is_even(n): if n % 2 == 0: print(True)"
+      },
+      {
+        "id": "c",
+        "text": "def is_even(n): return n % 2 == 0"
+      },
+      {
+        "id": "d",
+        "text": "def is_even(n): return n / 2"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does 'Hello'.upper() return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "'hello'"
+      },
+      {
+        "id": "b",
+        "text": "'HELLO'"
+      },
+      {
+        "id": "c",
+        "text": "'Hello'"
+      },
+      {
+        "id": "d",
+        "text": "'hELLO'"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does ' hi '.strip() return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "' hi'"
+      },
+      {
+        "id": "b",
+        "text": "'hi '"
+      },
+      {
+        "id": "c",
+        "text": "' hi '"
+      },
+      {
+        "id": "d",
+        "text": "'hi'"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does 'a,b,c'.split(',') return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "'a b c'"
+      },
+      {
+        "id": "b",
+        "text": "('a','b','c')"
+      },
+      {
+        "id": "c",
+        "text": "['a','b','c']"
+      },
+      {
+        "id": "d",
+        "text": "['a,b,c']"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does '-'.join(['a','b','c']) return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "'a b c'"
+      },
+      {
+        "id": "b",
+        "text": "['a-b-c']"
+      },
+      {
+        "id": "c",
+        "text": "'a-b-c'"
+      },
+      {
+        "id": "d",
+        "text": "'-a-b-c-'"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Does calling .upper() on a string change the original string?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, modifies in place"
+      },
+      {
+        "id": "b",
+        "text": "No, it returns a new string \u2014 you must reassign to keep the change"
+      },
+      {
+        "id": "c",
+        "text": "Only inside a function"
+      },
+      {
+        "id": "d",
+        "text": "Yes, unless you make a copy"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which code checks if a string email ends with '.ng'?",
+    "options": [
+      {
+        "id": "a",
+        "text": "email.contains('.ng')"
+      },
+      {
+        "id": "b",
+        "text": "email[-3:] == '.ng'"
+      },
+      {
+        "id": "c",
+        "text": "email.endswith('.ng')"
+      },
+      {
+        "id": "d",
+        "text": "'.ng' in email"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you create a NumPy array from the list [1,2,3]?",
+    "options": [
+      {
+        "id": "a",
+        "text": "np.list([1,2,3])"
+      },
+      {
+        "id": "b",
+        "text": "np.create([1,2,3])"
+      },
+      {
+        "id": "c",
+        "text": "np.array([1,2,3])"
+      },
+      {
+        "id": "d",
+        "text": "numpy([1,2,3])"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What happens when you add 5 to a NumPy array arr with arr + 5?",
+    "options": [
+      {
+        "id": "a",
+        "text": "5 is added only to the first item"
+      },
+      {
+        "id": "b",
+        "text": "The array length increases by 5"
+      },
+      {
+        "id": "c",
+        "text": "5 is added to every item at once (vectorisation)"
+      },
+      {
+        "id": "d",
+        "text": "TypeError is raised"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does [1,2] + [3,4] produce in plain Python (not NumPy)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "[2,4,6,8] element-wise addition"
+      },
+      {
+        "id": "b",
+        "text": "[1,2,3,4] concatenation"
+      },
+      {
+        "id": "c",
+        "text": "[4,6]"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you get the mean of a NumPy array called arr?",
+    "options": [
+      {
+        "id": "a",
+        "text": "np.mean()"
+      },
+      {
+        "id": "b",
+        "text": "mean(arr)"
+      },
+      {
+        "id": "c",
+        "text": "arr.average()"
+      },
+      {
+        "id": "d",
+        "text": "arr.mean()"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does arr[1:4] return on a NumPy array?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Items at index 1,2,3,4"
+      },
+      {
+        "id": "b",
+        "text": "Items at index 0,1,2,3"
+      },
+      {
+        "id": "c",
+        "text": "Items at index 1,2,3"
+      },
+      {
+        "id": "d",
+        "text": "The 4th item only"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does arr[arr > 70] do on a NumPy array?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Returns True for each item above 70"
+      },
+      {
+        "id": "b",
+        "text": "Returns only the items in arr greater than 70"
+      },
+      {
+        "id": "c",
+        "text": "Permanently removes all items below 70"
+      },
+      {
+        "id": "d",
+        "text": "Counts items above 70"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "What does np.linspace(0, 10, 5) produce?",
+    "options": [
+      {
+        "id": "a",
+        "text": "[0, 5, 10]"
+      },
+      {
+        "id": "b",
+        "text": "[0, 2, 4, 6, 8]"
+      },
+      {
+        "id": "c",
+        "text": "[0, 2.5, 5, 7.5, 10]"
+      },
+      {
+        "id": "d",
+        "text": "[0, 10, 5]"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "What is the step size of np.linspace(0, 10, 5)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "5"
+      },
+      {
+        "id": "b",
+        "text": "2"
+      },
+      {
+        "id": "c",
+        "text": "2.5"
+      },
+      {
+        "id": "d",
+        "text": "1"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "Which code filters a NumPy array scores to keep only values greater than 70 AND less than 90?",
+    "options": [
+      {
+        "id": "a",
+        "text": "scores[scores > 70 and scores < 90]"
+      },
+      {
+        "id": "b",
+        "text": "scores[scores > 70 or scores < 90]"
+      },
+      {
+        "id": "c",
+        "text": "scores[(scores > 70) & (scores < 90)]"
+      },
+      {
+        "id": "d",
+        "text": "scores[70 < scores < 90]"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Why does arr > 2 on a NumPy array return an array of True/False rather than a single result?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It is a bug in NumPy"
+      },
+      {
+        "id": "b",
+        "text": "The comparison is applied element-wise to every item, giving one result per item"
+      },
+      {
+        "id": "c",
+        "text": "NumPy always returns arrays"
+      },
+      {
+        "id": "d",
+        "text": "The operator is overloaded to mean something else"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the difference between a Pandas Series and a DataFrame?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A Series holds text; a DataFrame holds numbers"
+      },
+      {
+        "id": "b",
+        "text": "A Series is a single labelled column; a DataFrame is a full table of multiple columns"
+      },
+      {
+        "id": "c",
+        "text": "They are the same"
+      },
+      {
+        "id": "d",
+        "text": "A DataFrame is faster"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you load a CSV file called 'data.csv' into a Pandas DataFrame?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df = pandas.load('data.csv')"
+      },
+      {
+        "id": "b",
+        "text": "df = pd.open_csv('data.csv')"
+      },
+      {
+        "id": "c",
+        "text": "df = pd.read_csv('data.csv')"
+      },
+      {
+        "id": "d",
+        "text": "df = read.csv('data.csv')"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which set of commands are the four standard first steps when exploring a new DataFrame?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df.read(), df.columns, df.summary(), df.plot()"
+      },
+      {
+        "id": "b",
+        "text": "df.head(), df.shape, df.info(), df.describe()"
+      },
+      {
+        "id": "c",
+        "text": "df.first(), df.size, df.types(), df.stats()"
+      },
+      {
+        "id": "d",
+        "text": "df.show(), df.rows, df.schema(), df.mean()"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you select columns 'Name' and 'Score' from DataFrame df?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df['Name','Score']"
+      },
+      {
+        "id": "b",
+        "text": "df[Name, Score]"
+      },
+      {
+        "id": "c",
+        "text": "df[['Name','Score']]"
+      },
+      {
+        "id": "d",
+        "text": "df.select('Name','Score')"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you filter df to only rows where Score is above 80?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df.filter(Score > 80)"
+      },
+      {
+        "id": "b",
+        "text": "df[df.Score > 80]"
+      },
+      {
+        "id": "c",
+        "text": "df[df['Score'] > 80]"
+      },
+      {
+        "id": "d",
+        "text": "df.where('Score', 80)"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "How do you count missing values in every column of a DataFrame df?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df.count_null()"
+      },
+      {
+        "id": "b",
+        "text": "df.missing().count()"
+      },
+      {
+        "id": "c",
+        "text": "df.isnull().sum()"
+      },
+      {
+        "id": "d",
+        "text": "df.na().sum()"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does df.isnull().sum().sum() give you?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Missing values in the first column only"
+      },
+      {
+        "id": "b",
+        "text": "Total missing values across the entire DataFrame"
+      },
+      {
+        "id": "c",
+        "text": "Percentage of missing data"
+      },
+      {
+        "id": "d",
+        "text": "Count of columns with missing data"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "Why might a blank cell in a dataset NOT represent missing data?",
+    "options": [
+      {
+        "id": "a",
+        "text": "It always represents missing data"
+      },
+      {
+        "id": "b",
+        "text": "It could be a genuine 'not applicable' or 'none' category rather than a failed recording"
+      },
+      {
+        "id": "c",
+        "text": "Blank cells are filled with 0 by pandas automatically"
+      },
+      {
+        "id": "d",
+        "text": "Blank cells are dropped during import"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which Seaborn chart compares a number across different categories?",
+    "options": [
+      {
+        "id": "a",
+        "text": "sns.histplot()"
+      },
+      {
+        "id": "b",
+        "text": "sns.scatterplot()"
+      },
+      {
+        "id": "c",
+        "text": "sns.boxplot()"
+      },
+      {
+        "id": "d",
+        "text": "sns.barplot()"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which Seaborn chart shows how one numeric column is distributed?",
+    "options": [
+      {
+        "id": "a",
+        "text": "sns.barplot()"
+      },
+      {
+        "id": "b",
+        "text": "sns.histplot()"
+      },
+      {
+        "id": "c",
+        "text": "sns.scatterplot()"
+      },
+      {
+        "id": "d",
+        "text": "sns.lineplot()"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which Seaborn chart shows the relationship between two numeric columns?",
+    "options": [
+      {
+        "id": "a",
+        "text": "sns.barplot()"
+      },
+      {
+        "id": "b",
+        "text": "sns.histplot()"
+      },
+      {
+        "id": "c",
+        "text": "sns.boxplot()"
+      },
+      {
+        "id": "d",
+        "text": "sns.scatterplot()"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Which Seaborn chart compares the spread and outliers of a number across groups?",
+    "options": [
+      {
+        "id": "a",
+        "text": "sns.histplot()"
+      },
+      {
+        "id": "b",
+        "text": "sns.barplot()"
+      },
+      {
+        "id": "c",
+        "text": "sns.boxplot()"
+      },
+      {
+        "id": "d",
+        "text": "sns.scatterplot()"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is an outlier?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A missing value in the dataset"
+      },
+      {
+        "id": "b",
+        "text": "A data point that lies far outside the general pattern of the rest"
+      },
+      {
+        "id": "c",
+        "text": "The mean of the dataset"
+      },
+      {
+        "id": "d",
+        "text": "A duplicate row"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "In percentile capping, what does using '3 times the 99th percentile' as a ceiling mean?",
+    "options": [
+      {
+        "id": "a",
+        "text": "All values above 99 are removed"
+      },
+      {
+        "id": "b",
+        "text": "Any value beyond three times the top 1% threshold is capped to that ceiling"
+      },
+      {
+        "id": "c",
+        "text": "The mean is multiplied by 3"
+      },
+      {
+        "id": "d",
+        "text": "3% of data is removed from the top"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the formula for IQR?",
+    "options": [
+      {
+        "id": "a",
+        "text": "IQR = mean minus median"
+      },
+      {
+        "id": "b",
+        "text": "IQR = max minus min"
+      },
+      {
+        "id": "c",
+        "text": "IQR = Q3 minus Q1"
+      },
+      {
+        "id": "d",
+        "text": "IQR = Q2 minus Q1"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What does Q1 represent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The median (50th percentile)"
+      },
+      {
+        "id": "b",
+        "text": "The 25th percentile \u2014 25% of data falls below it"
+      },
+      {
+        "id": "c",
+        "text": "The minimum value"
+      },
+      {
+        "id": "d",
+        "text": "The 75th percentile"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "What is the formula for the upper fence in the IQR method?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Q3 + IQR"
+      },
+      {
+        "id": "b",
+        "text": "Q3 + 2 x IQR"
+      },
+      {
+        "id": "c",
+        "text": "Q3 + 1.5 x IQR"
+      },
+      {
+        "id": "d",
+        "text": "Q1 + 1.5 x IQR"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Given Q1 = 17 and Q3 = 25, what is the IQR?",
+    "options": [
+      {
+        "id": "a",
+        "text": "42"
+      },
+      {
+        "id": "b",
+        "text": "4"
+      },
+      {
+        "id": "c",
+        "text": "21"
+      },
+      {
+        "id": "d",
+        "text": "8"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Using IQR = 8 and Q3 = 25, what is the upper fence?",
+    "options": [
+      {
+        "id": "a",
+        "text": "33"
+      },
+      {
+        "id": "b",
+        "text": "37"
+      },
+      {
+        "id": "c",
+        "text": "41"
+      },
+      {
+        "id": "d",
+        "text": "29"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "What is the difference between capping an outlier and treating it as censored data?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They are the same thing"
+      },
+      {
+        "id": "b",
+        "text": "Capping pulls excessive values to a limit; censored means the value was never recorded past a collection ceiling"
+      },
+      {
+        "id": "c",
+        "text": "Censored data is more accurate"
+      },
+      {
+        "id": "d",
+        "text": "Capping removes the outlier; censoring keeps it"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "easy",
+    "prompt": "Why is the IQR method often preferred over manually choosing a percentile multiplier?",
+    "options": [
+      {
+        "id": "a",
+        "text": "IQR is always more accurate"
+      },
+      {
+        "id": "b",
+        "text": "It uses a standard 1.5x rule rather than requiring the analyst to guess a multiplier per column"
+      },
+      {
+        "id": "c",
+        "text": "IQR never removes real data"
+      },
+      {
+        "id": "d",
+        "text": "It works only for normally distributed data"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "difficulty": "medium",
+    "prompt": "Which code correctly calculates Q1, Q3, IQR, lower and upper fences for df['price']?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Q1=df['price'].mean(0.25); Q3=df['price'].mean(0.75); IQR=Q3-Q1"
+      },
+      {
+        "id": "b",
+        "text": "Q1=df['price'].quantile(0.25); Q3=df['price'].quantile(0.75); IQR=Q3-Q1; lower=Q1-1.5*IQR; upper=Q3+1.5*IQR"
+      },
+      {
+        "id": "c",
+        "text": "Q1=percentile(df['price'],25); Q3=percentile(df['price'],75); IQR=Q3-Q1"
+      },
+      {
+        "id": "d",
+        "text": "Q1=df['price'].min(); Q3=df['price'].max(); IQR=Q3-Q1"
+      }
+    ],
+    "correct_option_id": "b"
+  }
 ]

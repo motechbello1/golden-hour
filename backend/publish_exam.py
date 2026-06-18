@@ -1,13 +1,11 @@
 """
-Run once after seed_questions.py:
-
-    python publish_exam.py
-
-Creates and publishes the Cohort Two AI/ML assessment: 20 objective
-questions at 7s each, 5 code questions at 12s each, drawn from the
-42-question bank already seeded.
+Run after seed_questions.py to publish or update the exam.
+python publish_exam.py
 """
 from config import supabase
+
+SECONDS_PER_QUESTION = 15
+QUESTIONS_PER_EXAM = 25   # drawn randomly from the 100-question bank per student
 
 
 def main():
@@ -15,26 +13,27 @@ def main():
 
     existing = supabase.table("exams").select("id").eq("track_id", track["id"]).execute()
     if existing.data:
-        print("An exam already exists for this track — skipping. Delete it first if you want a fresh one.")
+        supabase.table("exams").update({
+            "objective_time_seconds": SECONDS_PER_QUESTION,
+            "code_time_seconds": SECONDS_PER_QUESTION,
+            "objective_count": QUESTIONS_PER_EXAM,
+            "code_count": 0,
+            "is_published": True,
+        }).eq("track_id", track["id"]).execute()
+        print(f"Updated exam — {QUESTIONS_PER_EXAM} questions at {SECONDS_PER_QUESTION}s each.")
         return
 
-    exam = (
-        supabase.table("exams")
-        .insert(
-            {
-                "track_id": track["id"],
-                "title": "AI & ML — Cohort Two Assessment",
-                "objective_count": 20,
-                "code_count": 5,
-                "objective_time_seconds": 7,
-                "code_time_seconds": 12,
-                "paraphrase": False,
-                "is_published": True,
-            }
-        )
-        .execute()
-    )
-    print(f"Published exam: {exam.data[0]['id']}")
+    exam = supabase.table("exams").insert({
+        "track_id": track["id"],
+        "title": "AI & ML — Cohort Two Assessment",
+        "objective_count": QUESTIONS_PER_EXAM,
+        "code_count": 0,
+        "objective_time_seconds": SECONDS_PER_QUESTION,
+        "code_time_seconds": SECONDS_PER_QUESTION,
+        "paraphrase": False,
+        "is_published": True,
+    }).execute()
+    print(f"Published: {exam.data[0]['id']}")
 
 
 if __name__ == "__main__":

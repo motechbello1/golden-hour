@@ -2,14 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 
 const CHECK_INTERVAL_MS = 2500;
-const SUSTAINED_STREAK_TO_FLAG = 2;
-const GAZE_DEVIATION_THRESHOLD = 0.18;
+const SUSTAINED_STREAK_TO_FLAG = 2; // ~5s of the same condition before flagging — avoids one bad frame causing a false flag
+const GAZE_DEVIATION_THRESHOLD = 0.18; // fraction of face-box width the nose can drift before counting as "looking away"
 
+/**
+ * Runs entirely in the student's browser. Only short flag events (plus,
+ * optionally, a single still snapshot at the moment of the flag) are
+ * sent to the server — never a continuous video stream. That's a
+ * deliberate scaling choice: 500 concurrent students sending event logs
+ * is nothing; 500 concurrent video streams hitting a server for
+ * inference would need real GPU infrastructure for no real benefit,
+ * since the model runs perfectly well on each student's own device.
+ */
 export function ProctorCamera({ onFlag, onCameraReady, onCameraError, includeSnapshots = true }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streaksRef = useRef({ no_face: 0, multiple_faces: 0, looking_away: 0 });
-  const [status, setStatus] = useState("loading");
+  const [status, setStatus] = useState("loading"); // loading | ready | error
 
   useEffect(() => {
     let stream;
@@ -82,7 +91,7 @@ export function ProctorCamera({ onFlag, onCameraReady, onCameraError, includeSna
     }
 
     function maybeFlag(eventType, streakCount, meta) {
-      if (streakCount !== SUSTAINED_STREAK_TO_FLAG) return;
+      if (streakCount !== SUSTAINED_STREAK_TO_FLAG) return; // fire once per sustained episode, not every tick
       const snapshot = includeSnapshots ? captureSnapshot() : null;
       onFlag?.({ event_type: eventType, meta, snapshot_base64: snapshot });
     }
@@ -108,13 +117,7 @@ export function ProctorCamera({ onFlag, onCameraReady, onCameraError, includeSna
 
   return (
     <div className="flex items-center gap-2 rounded-lg border border-hourDim/40 bg-surface px-3 py-2">
-      <video
-        ref={videoRef}
-        muted
-        playsInline
-        className="h-16 w-20 rounded object-cover"
-        style={{ transform: "scaleX(-1)" }}
-      />
+      <video ref={videoRef} muted playsInline className="h-16 w-20 rounded object-cover" />
       <canvas ref={canvasRef} className="hidden" />
       <div className="text-xs text-ash">
         {status === "loading" && "Starting camera check…"}
