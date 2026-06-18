@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 
 const TRACKS = [
@@ -28,14 +28,12 @@ export default function Register() {
     try {
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
       if (signUpError) throw signUpError;
-
       const { data: track, error: trackError } = await supabase
         .from("tracks")
         .select("id")
         .eq("slug", trackSlug)
         .single();
       if (trackError) throw trackError;
-
       const { error: studentError } = await supabase.from("students").insert({
         id: signUpData.user.id,
         full_name: fullName,
@@ -43,7 +41,6 @@ export default function Register() {
         track_id: track.id,
       });
       if (studentError) throw studentError;
-
       navigate("/track");
     } catch (err) {
       setError(err.message || "Registration failed");
@@ -59,7 +56,6 @@ export default function Register() {
           <h1 className="font-display text-3xl text-ivory">Golden Hour</h1>
           <p className="text-ash text-sm mt-1">Register for your cohort's assessment.</p>
         </div>
-
         <div className="space-y-3">
           <input
             required
@@ -95,9 +91,7 @@ export default function Register() {
             ))}
           </select>
         </div>
-
         {error && <p className="text-alert text-sm">{error}</p>}
-
         <button
           type="submit"
           disabled={loading}
@@ -105,6 +99,9 @@ export default function Register() {
         >
           {loading ? "Registering…" : "Register"}
         </button>
+        <p className="text-center text-sm text-ash">
+          Already have an account? <Link to="/login" className="text-hour hover:underline">Log in</Link>
+        </p>
       </form>
     </div>
   );
