@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabaseClient";
 import { api } from "../lib/api";
 import { ThemeToggle } from "../lib/ThemeContext.jsx";
 
@@ -7,6 +8,13 @@ export default function Results() {
   const { sessionId } = useParams();
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const nav = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) nav("/login");
+    });
+  }, []);
 
   useEffect(() => {
     api.getResult(sessionId).then(setResult).catch(e => setError(e.message));

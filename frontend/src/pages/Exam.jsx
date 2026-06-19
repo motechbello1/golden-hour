@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, proctorSocketUrl } from "../lib/api";
+import { supabase } from "../lib/supabaseClient";
 import { setupLockdown } from "../lib/useLockdown";
 import { ProctorCamera } from "../components/ProctorCamera";
 
@@ -24,6 +25,15 @@ export default function Exam() {
   const [error, setError] = useState(null);
   const [endReason, setEndReason] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Auth gate — redirect immediately if not logged in
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) { navigate("/login"); return; }
+      setAuthChecked(true);
+    });
+  }, [navigate]);
 
   const sendEvent = useCallback((p) => {
     if (wsRef.current?.readyState === WebSocket.OPEN)
@@ -171,6 +181,11 @@ export default function Exam() {
       if ((document.fullscreenElement || document.webkitFullscreenElement) && exitFs)
         exitFs.call(document).catch(() => {});
     }
+  }
+
+  // ──────── AUTH GATE ────────
+  if (!authChecked) {
+    return <div className="min-h-screen bg-ink flex items-center justify-center"><p className="text-ash animate-pulse">Loading…</p></div>;
   }
 
   // ──────── CAMERA CHECK ────────
