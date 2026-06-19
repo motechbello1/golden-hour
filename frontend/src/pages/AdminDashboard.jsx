@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "../lib/supabaseClient";
 import { ThemeToggle } from "../lib/ThemeContext.jsx";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 const ADMIN_KEY = "golden-hour-admin-2024";
+
+function adminFetch(path) {
+  return fetch(`${API}${path}`, { headers: { "x-admin-key": ADMIN_KEY } }).then(r => r.ok ? r.json() : []);
+}
 
 export default function AdminDashboard() {
   const [unlocked, setUnlocked] = useState(sessionStorage.getItem("gh_a") === "1");
@@ -13,7 +16,6 @@ export default function AdminDashboard() {
   const [events, setEvents] = useState([]);
   const [retakes, setRetakes] = useState([]);
   const [exams, setExams] = useState([]);
-  const [tracks, setTracks] = useState([]);
   const [proctorEvents, setProctorEvents] = useState([]);
   const [editingExam, setEditingExam] = useState(null);
   const [actionStatus, setActionStatus] = useState({});
@@ -26,25 +28,23 @@ export default function AdminDashboard() {
     const ws = new WebSocket(`${API.replace(/^http/, "ws")}/ws/admin/live`);
     ws.onmessage = (msg) => {
       const d = JSON.parse(msg.data);
-      setEvents((p) => [{ ...d, at: new Date().toLocaleTimeString() }, ...p].slice(0, 80));
+      setEvents(p => [{ ...d, at: new Date().toLocaleTimeString() }, ...p].slice(0, 80));
     };
     wsRef.current = ws;
     return () => { clearInterval(poll); ws.close(); };
   }, [unlocked]);
 
   async function loadAll() {
-    const [sessRes, retakeRes, examRes, trackRes, eventsRes] = await Promise.all([
-      supabase.from("exam_sessions").select("*, students(full_name, unique_code, id)").order("started_at", { ascending: false }).limit(200),
-      fetch(`${API}/admin/retake-requests`, { headers: { "x-admin-key": ADMIN_KEY } }).then(r => r.ok ? r.json() : []),
-      supabase.from("exams").select("*, tracks(name, slug)").order("created_at", { ascending: false }),
-      supabase.from("tracks").select("*"),
-      supabase.from("proctor_events").select("*, exam_sessions(students(full_name, unique_code))").order("created_at", { ascending: false }).limit(100),
+    const [sess, ret, ex, pe] = await Promise.all([
+      adminFetch("/admin/sessions"),
+      adminFetch("/admin/retake-requests"),
+      adminFetch("/admin/exams"),
+      adminFetch("/admin/proctor-events"),
     ]);
-    setSessions(sessRes.data || []);
-    setRetakes(retakeRes);
-    setExams(examRes.data || []);
-    setTracks(trackRes.data || []);
-    setProctorEvents(eventsRes.data || []);
+    setSessions(sess);
+    setRetakes(ret);
+    setExams(ex);
+    setProctorEvents(pe);
   }
 
   async function handleRetake(id, action) {
@@ -57,15 +57,19 @@ export default function AdminDashboard() {
   }
 
   async function saveExamConfig(exam) {
-    await supabase.from("exams").update({
-      objective_count: exam.objective_count,
-      code_count: exam.code_count,
-      objective_time_seconds: exam.objective_time_seconds,
-      code_time_seconds: exam.code_time_seconds,
-      paraphrase: exam.paraphrase,
-    }).eq("id", exam.id);
-    setEditingExam(null);
-    loadAll();
+    const res = await fetch(`${API}/admin/exams/${exam.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "x-admin-key": ADMIN_KEY },
+      body: JSON.stringify({
+        objective_count: exam.objective_count,
+        code_count: exam.code_count || 0,
+        objective_time_seconds: exam.objective_time_seconds,
+        code_time_seconds: exam.code_time_seconds || exam.objective_time_seconds,
+        paraphrase: exam.paraphrase || false,
+      }),
+    });
+    if (res.ok) { setEditingExam(null); loadAll(); }
+    else { const d = await res.json(); alert(d.detail || "Save failed"); }
   }
 
   function unlock() {
@@ -80,14 +84,11 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-ink flex items-center justify-center">
         <div className="w-80 space-y-5 text-center animate-fade-in">
           <h1 className="font-display text-2xl text-ivory">Admin Access</h1>
-          <p className="text-ash text-sm">Enter your admin key to continue</p>
+          <p className="text-ash text-sm">Enter your admin key</p>
           <input type="password" value={keyInput} onChange={e => setKeyInput(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && unlock()}
-            placeholder="Admin key"
+            onKeyDown={e => e.key === "Enter" && unlock()} placeholder="Admin key"
             className="w-full rounded-xl bg-surface border border-surface2 px-4 py-3 text-ivory placeholder:text-ash/50 focus:outline-none focus:ring-2 focus:ring-hour" />
-          <button onClick={unlock} className="w-full rounded-xl bg-hour text-ink font-bold py-3 hover:shadow-lg hover:shadow-hour/20 transition">
-            Enter
-          </button>
+          <button onClick={unlock} className="w-full rounded-xl bg-hour text-ink font-bold py-3 transition hover:shadow-lg hover:shadow-hour/20">Enter</button>
         </div>
       </div>
     );
@@ -95,18 +96,19 @@ export default function AdminDashboard() {
 
   const pendingRetakes = retakes.filter(r => r.status === "pending").length;
   const hardEvents = proctorEvents.filter(e => e.severity === "hard").length;
+  const softEvents = proctorEvents.filter(e => e.severity === "soft").length;
   const activeSessions = sessions.filter(s => s.status === "in_progress").length;
+
   const tabs = [
     { id: "sessions", label: "Sessions", badge: activeSessions || null },
     { id: "retakes", label: "Retakes", badge: pendingRetakes || null },
-    { id: "integrity", label: "Integrity", badge: hardEvents || null },
+    { id: "integrity", label: "Integrity", badge: (hardEvents + softEvents) || null },
     { id: "exams", label: "Exam Config" },
     { id: "live", label: "Live Feed" },
   ];
 
   return (
     <div className="min-h-screen bg-ink">
-      {/* Header */}
       <header className="border-b border-surface2 px-5 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="font-display text-xl text-ivory">Golden Hour</h1>
@@ -115,13 +117,13 @@ export default function AdminDashboard() {
         <ThemeToggle />
       </header>
 
-      {/* Stats bar */}
       <div className="border-b border-surface2 px-5 py-3 flex gap-6">
         {[
           ["Active", activeSessions, "text-good"],
           ["Total Sessions", sessions.length, "text-ivory"],
           ["Pending Retakes", pendingRetakes, pendingRetakes ? "text-hour" : "text-ash"],
           ["Hard Violations", hardEvents, hardEvents ? "text-alert" : "text-ash"],
+          ["Soft Flags", softEvents, softEvents ? "text-hour" : "text-ash"],
         ].map(([label, val, color]) => (
           <div key={label} className="text-center">
             <p className={`font-mono text-lg font-bold ${color}`}>{val}</p>
@@ -130,7 +132,6 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Tabs */}
       <div className="border-b border-surface2 px-5 flex gap-1 overflow-x-auto">
         {tabs.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
@@ -138,16 +139,14 @@ export default function AdminDashboard() {
               tab === t.id ? "border-hour text-ivory" : "border-transparent text-ash hover:text-ivory"
             }`}>
             {t.label}
-            {t.badge > 0 && (
-              <span className="ml-1.5 bg-alert text-ivory text-xs rounded-full px-1.5 py-0.5 font-mono">{t.badge}</span>
-            )}
+            {t.badge > 0 && <span className="ml-1.5 bg-alert text-ivory text-xs rounded-full px-1.5 py-0.5 font-mono">{t.badge}</span>}
           </button>
         ))}
       </div>
 
       <div className="px-5 py-5 max-w-6xl mx-auto animate-fade-in">
 
-        {/* ─── SESSIONS ─── */}
+        {/* SESSIONS */}
         {tab === "sessions" && (
           <div className="space-y-2">
             {sessions.length === 0 && <Empty>No sessions yet</Empty>}
@@ -156,11 +155,10 @@ export default function AdminDashboard() {
                 <div className="flex items-center gap-3">
                   <div className={`w-2 h-2 rounded-full ${
                     s.status === "in_progress" ? "bg-good animate-pulse" :
-                    s.status === "submitted" ? "bg-ash" :
-                    s.status === "auto_submitted" ? "bg-alert" : "bg-hourDim"
+                    s.status === "auto_submitted" ? "bg-alert" : "bg-ash"
                   }`} />
                   <div>
-                    <p className="text-ivory text-sm font-medium">{s.students?.full_name}</p>
+                    <p className="text-ivory text-sm font-medium">{s.students?.full_name || "Unknown"}</p>
                     <p className="text-ash text-xs font-mono">{s.students?.unique_code}</p>
                   </div>
                 </div>
@@ -178,7 +176,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ─── RETAKES ─── */}
+        {/* RETAKES */}
         {tab === "retakes" && (
           <div className="space-y-3">
             {retakes.length === 0 && <Empty>No retake requests</Empty>}
@@ -193,7 +191,7 @@ export default function AdminDashboard() {
                       <span className="text-ash font-mono text-xs ml-2">{r.students?.unique_code}</span>
                     </p>
                     <p className="text-ash text-xs mt-0.5">{r.exams?.title}</p>
-                    {r.reason && <p className="text-ash text-xs mt-1 italic bg-surface2/50 rounded-lg px-3 py-1.5 mt-2">"{r.reason}"</p>}
+                    {r.reason && <p className="text-ash text-xs italic bg-surface2/50 rounded-lg px-3 py-1.5 mt-2">"{r.reason}"</p>}
                     <p className="text-ash/50 text-xs mt-2">{new Date(r.created_at).toLocaleString()}</p>
                   </div>
                   <div className="shrink-0 flex flex-col gap-2">
@@ -203,9 +201,7 @@ export default function AdminDashboard() {
                         {actionStatus[r.id] === "..." ? "..." : "Approve"}
                       </button>
                       <button onClick={() => handleRetake(r.id, "deny")}
-                        className="px-5 py-2 rounded-lg bg-surface2 text-ash text-sm hover:text-ivory transition">
-                        Deny
-                      </button>
+                        className="px-5 py-2 rounded-lg bg-surface2 text-ash text-sm hover:text-ivory transition">Deny</button>
                     </>) : (
                       <span className={`text-xs font-mono px-3 py-1 rounded-full ${
                         r.status === "approved" ? "bg-good/20 text-good" : "bg-surface2 text-ash"
@@ -218,10 +214,10 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ─── INTEGRITY ─── */}
+        {/* INTEGRITY */}
         {tab === "integrity" && (
           <div className="space-y-2">
-            {proctorEvents.length === 0 && <Empty>No integrity events recorded</Empty>}
+            {proctorEvents.length === 0 && <Empty>No integrity events recorded yet — events appear here when students trigger camera flags or lockdown violations during exams</Empty>}
             {proctorEvents.map(e => (
               <div key={e.id} className={`rounded-xl border px-4 py-3 flex items-center justify-between animate-slide-up ${
                 e.severity === "hard" ? "bg-alert/5 border-alert/20" : "bg-surface border-surface2"
@@ -232,7 +228,7 @@ export default function AdminDashboard() {
                   </span>
                   <div>
                     <p className="text-ivory text-sm">
-                      <span className="font-medium">{e.exam_sessions?.students?.full_name}</span>
+                      <span className="font-medium">{e.exam_sessions?.students?.full_name || "Student"}</span>
                       <span className="text-ash font-mono text-xs ml-2">{e.exam_sessions?.students?.unique_code}</span>
                     </p>
                     <p className="text-ash text-xs font-mono mt-0.5">
@@ -240,15 +236,20 @@ export default function AdminDashboard() {
                     </p>
                   </div>
                 </div>
-                {e.snapshot_url && (
-                  <span className="text-hour text-xs font-mono bg-hour/10 rounded-lg px-2 py-1">📷 Snapshot saved</span>
-                )}
+                <div className="flex items-center gap-2">
+                  {e.snapshot_url && (
+                    <span className="text-hour text-xs font-mono bg-hour/10 rounded-lg px-2 py-1">📷 Snapshot</span>
+                  )}
+                  <span className={`text-xs font-mono px-2 py-0.5 rounded-full ${
+                    e.severity === "hard" ? "bg-alert/15 text-alert" : "bg-hour/15 text-hour"
+                  }`}>{e.severity}</span>
+                </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* ─── EXAM CONFIG ─── */}
+        {/* EXAM CONFIG */}
         {tab === "exams" && (
           <div className="space-y-4">
             {exams.map(exam => {
@@ -262,37 +263,27 @@ export default function AdminDashboard() {
                       <p className="text-ash text-xs mt-0.5">{exam.tracks?.name} · {exam.is_published ? "Published" : "Draft"}</p>
                     </div>
                     {!editing ? (
-                      <button onClick={() => setEditingExam({ ...exam })}
-                        className="text-hour text-sm font-medium hover:underline">Edit</button>
+                      <button onClick={() => setEditingExam({ ...exam })} className="text-hour text-sm font-medium hover:underline">Edit</button>
                     ) : (
                       <div className="flex gap-2">
-                        <button onClick={() => saveExamConfig(editingExam)}
-                          className="px-4 py-1.5 rounded-lg bg-good text-ink text-sm font-semibold">Save</button>
-                        <button onClick={() => setEditingExam(null)}
-                          className="px-4 py-1.5 rounded-lg bg-surface2 text-ash text-sm">Cancel</button>
+                        <button onClick={() => saveExamConfig(editingExam)} className="px-4 py-1.5 rounded-lg bg-good text-ink text-sm font-semibold">Save</button>
+                        <button onClick={() => setEditingExam(null)} className="px-4 py-1.5 rounded-lg bg-surface2 text-ash text-sm">Cancel</button>
                       </div>
                     )}
                   </div>
-
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <ConfigField label="Questions" value={e.objective_count + (e.code_count || 0)} editing={editing}
+                    <CField label="Questions" value={e.objective_count + (e.code_count || 0)} editing={editing}
                       onChange={v => setEditingExam(x => ({ ...x, objective_count: parseInt(v) || 0 }))} />
-                    <ConfigField label="Seconds / question" value={e.objective_time_seconds} editing={editing}
-                      onChange={v => setEditingExam(x => ({ ...x, objective_time_seconds: parseInt(v) || 15, code_time_seconds: parseInt(v) || 15 }))} />
+                    <CField label="Seconds / question" value={e.objective_time_seconds} editing={editing}
+                      onChange={v => setEditingExam(x => ({ ...x, objective_time_seconds: parseInt(v) || 25, code_time_seconds: parseInt(v) || 25 }))} />
                     <div>
                       <p className="text-ash text-xs uppercase tracking-wider mb-1.5">Paraphrase</p>
                       {editing ? (
                         <button onClick={() => setEditingExam(x => ({ ...x, paraphrase: !x.paraphrase }))}
-                          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-                            e.paraphrase ? "bg-good/20 text-good" : "bg-surface2 text-ash"
-                          }`}>
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${e.paraphrase ? "bg-good/20 text-good" : "bg-surface2 text-ash"}`}>
                           {e.paraphrase ? "ON" : "OFF"}
                         </button>
-                      ) : (
-                        <p className={`text-sm font-mono ${e.paraphrase ? "text-good" : "text-ash"}`}>
-                          {e.paraphrase ? "ON" : "OFF"}
-                        </p>
-                      )}
+                      ) : <p className={`text-sm font-mono ${e.paraphrase ? "text-good" : "text-ash"}`}>{e.paraphrase ? "ON" : "OFF"}</p>}
                     </div>
                     <div>
                       <p className="text-ash text-xs uppercase tracking-wider mb-1.5">Shuffle</p>
@@ -306,10 +297,10 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ─── LIVE FEED ─── */}
+        {/* LIVE FEED */}
         {tab === "live" && (
           <div className="space-y-1.5 max-h-[70vh] overflow-y-auto">
-            {events.length === 0 && <Empty>Waiting for events…</Empty>}
+            {events.length === 0 && <Empty>Waiting for live events…</Empty>}
             {events.map((e, i) => (
               <div key={i} className="text-xs rounded-lg bg-surface border border-surface2 px-4 py-2.5 flex items-center gap-3 animate-fade-in">
                 <span className="text-ash font-mono shrink-0">{e.at}</span>
@@ -327,7 +318,7 @@ export default function AdminDashboard() {
 }
 
 function Badge({ status }) {
-  const map = {
+  const m = {
     in_progress: ["bg-good/15 text-good", "Active"],
     disconnected: ["bg-hour/15 text-hour", "Disconnected"],
     submitted: ["bg-ash/15 text-ash", "Submitted"],
@@ -335,24 +326,22 @@ function Badge({ status }) {
     expired: ["bg-alert/15 text-alert", "Expired"],
     reset: ["bg-hour/15 text-hour", "Reset"],
   };
-  const [cls, label] = map[status] || ["bg-ash/15 text-ash", status];
-  return <span className={`text-xs font-mono px-2.5 py-0.5 rounded-full ${cls}`}>{label}</span>;
+  const [c, l] = m[status] || ["bg-ash/15 text-ash", status];
+  return <span className={`text-xs font-mono px-2.5 py-0.5 rounded-full ${c}`}>{l}</span>;
 }
 
-function ConfigField({ label, value, editing, onChange }) {
+function CField({ label, value, editing, onChange }) {
   return (
     <div>
       <p className="text-ash text-xs uppercase tracking-wider mb-1.5">{label}</p>
       {editing ? (
         <input type="number" value={value} onChange={e => onChange(e.target.value)}
           className="w-full rounded-lg bg-surface2 border border-surface2 px-3 py-1.5 text-ivory text-sm font-mono focus:outline-none focus:ring-1 focus:ring-hour" />
-      ) : (
-        <p className="text-ivory text-sm font-mono">{value}</p>
-      )}
+      ) : <p className="text-ivory text-sm font-mono">{value}</p>}
     </div>
   );
 }
 
 function Empty({ children }) {
-  return <p className="text-ash text-sm text-center py-8">{children}</p>;
+  return <p className="text-ash text-sm text-center py-12">{children}</p>;
 }
