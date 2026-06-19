@@ -101,6 +101,13 @@ def submit_answer(req: AnswerRequest, student=Depends(get_current_student)):
     if is_last:
         update["status"] = "submitted"
         update["submitted_at"] = datetime.now(timezone.utc).isoformat()
+
+    # Always update the running score so it's accurate even on auto-submit
+    all_answers = supabase.table("exam_answers").select("is_correct").eq("session_id", session["id"]).execute().data
+    summary = summarize_session(all_answers)
+    update["score"] = summary["score"]
+    update["max_score"] = summary["max_score"]
+
     supabase.table("exam_sessions").update(update).eq("id", session["id"]).execute()
     session.update(update)
 

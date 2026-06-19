@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 
 const CHECK_INTERVAL_MS = 2500;
-const LIVE_SNAPSHOT_INTERVAL_MS = 8000; // send a low-res frame to admin every 8s
+const LIVE_SNAPSHOT_INTERVAL_MS = 2500; // send a low-res frame to admin every 2.5s
 const SUSTAINED_STREAK_TO_FLAG = 2;
 const GAZE_DEVIATION_THRESHOLD = 0.18;
 
@@ -34,7 +34,7 @@ export function ProctorCamera({ onFlag, onLiveSnapshot, onCameraReady, onCameraE
         // Periodic live snapshots for admin monitoring
         if (onLiveSnapshot) {
           liveInterval = setInterval(() => {
-            const snap = captureSnapshot(0.3); // very low quality for bandwidth
+            const snap = captureSnapshot(0.15); // minimal quality for fast transmission
             if (snap) onLiveSnapshot(snap);
           }, LIVE_SNAPSHOT_INTERVAL_MS);
         }

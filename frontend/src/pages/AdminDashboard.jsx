@@ -297,7 +297,7 @@ export default function AdminDashboard() {
             )}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {Object.entries(liveFeeds).map(([sid, feed]) => {
-                const stale = Date.now() - feed.lastUpdate > 30000;
+                const stale = Date.now() - feed.lastUpdate > 10000;
                 return (
                   <div key={sid} className={`rounded-xl border overflow-hidden animate-scale-in ${
                     stale ? "border-surface2 opacity-40" : "border-hourDim/30"

@@ -11,7 +11,7 @@ from services.scoring import summarize_session
 
 router = APIRouter()
 
-HEARTBEAT_TIMEOUT_SECONDS = 15
+HEARTBEAT_TIMEOUT_SECONDS = 30
 HARD_VIOLATIONS = {"fullscreen_exit", "tab_blur", "devtools_attempt"}
 
 _last_heartbeat: dict[str, float] = {}
