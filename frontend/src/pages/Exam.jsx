@@ -147,7 +147,7 @@ export default function Exam() {
         <div className="w-full max-w-md space-y-8 text-center">
           <div>
             <p className="text-hour text-xs font-mono uppercase tracking-[.25em] mb-3">
-              ICBM Technical Bootcamp
+              Golden Hour
             </p>
             <h1 className="font-display text-4xl text-ivory leading-tight">
               Golden Hour

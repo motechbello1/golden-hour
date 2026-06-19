@@ -117,7 +117,7 @@ export function ProctorCamera({ onFlag, onCameraReady, onCameraError, includeSna
 
   return (
     <div className="flex items-center gap-2 rounded-lg border border-hourDim/40 bg-surface px-3 py-2">
-      <video ref={videoRef} muted playsInline className="h-16 w-20 rounded object-cover" />
+      <video ref={videoRef} muted playsInline className="h-16 w-20 rounded object-cover" style={{ transform: "scaleX(-1)" }} />
       <canvas ref={canvasRef} className="hidden" />
       <div className="text-xs text-ash">
         {status === "loading" && "Starting camera check…"}

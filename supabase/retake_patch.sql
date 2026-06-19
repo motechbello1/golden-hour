@@ -32,8 +32,8 @@ create policy "students can view own retake requests" on retake_requests
 
 -- 3. Update exam timing (run this to apply 15s per question)
 update exams set
-  objective_time_seconds = 15,
-  code_time_seconds = 15,
+  objective_time_seconds = 25,
+  code_time_seconds = 25,
   objective_count = 25,
   code_count = 0;
 

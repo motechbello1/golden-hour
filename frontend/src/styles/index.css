@@ -2,16 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
-  height: 100%;
+html, body, #root { height: 100%; }
+body { font-family: 'Inter', system-ui, sans-serif; }
+
+/* ── Dark theme (default) ── */
+:root, .dark {
+  --color-ink: #0F0D0B;
+  --color-surface: #1A1714;
+  --color-surface2: #242019;
+  --color-hour: #E8A33D;
+  --color-hourDim: #7A5A26;
+  --color-alert: #E05A3A;
+  --color-good: #5CB870;
+  --color-ivory: #F2EDE4;
+  --color-ash: #9A9186;
+  --color-primary: #F2EDE4;
+  color-scheme: dark;
 }
 
-body {
-  font-family: 'Inter', system-ui, sans-serif;
+/* ── Light theme ── */
+.light {
+  --color-ink: #FAFAF8;
+  --color-surface: #FFFFFF;
+  --color-surface2: #F0EDE8;
+  --color-hour: #C4841E;
+  --color-hourDim: #D4A04A;
+  --color-alert: #D04428;
+  --color-good: #2E8B45;
+  --color-ivory: #1A1714;
+  --color-ash: #6B6560;
+  --color-primary: #1A1714;
+  color-scheme: light;
 }
 
-/* The "golden hour" draining bar — the platform's signature element.
-   A literal beam of light running out under each question. */
+/* ── Timer drain bar ── */
 @keyframes drain {
   from { transform: scaleX(1); }
   to { transform: scaleX(0); }
@@ -19,4 +43,21 @@ body {
 .timer-bar {
   transform-origin: left;
   animation: drain linear forwards;
+}
+
+/* ── Smooth transitions on theme change ── */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-ink); }
+::-webkit-scrollbar-thumb { background: var(--color-surface2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ash); }
+
+/* ── Selection ── */
+::selection {
+  background: var(--color-hour);
+  color: var(--color-ink);
 }

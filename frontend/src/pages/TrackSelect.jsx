@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import { api } from "../lib/api";
+import { ThemeToggle } from "../lib/ThemeContext.jsx";
 
 export default function TrackSelect() {
   const [student, setStudent] = useState(null);
@@ -18,54 +18,36 @@ export default function TrackSelect() {
   useEffect(() => { load(); }, []);
 
   async function load() {
-    const { data: sessionData } = await supabase.auth.getSession();
-    if (!sessionData.session) { navigate("/login"); return; }
-    const userId = sessionData.session.user.id;
-
-    const { data: studentRow } = await supabase.from("students").select("*").eq("id", userId).single();
-    setStudent(studentRow);
-
-    const { data: trackRow } = await supabase.from("tracks").select("*").eq("id", studentRow.track_id).single();
-    setTrack(trackRow);
-
-    const { data: examRows } = await supabase
-      .from("exams").select("*").eq("track_id", studentRow.track_id).eq("is_published", true);
-    setExams(examRows || []);
-
-    // Load session statuses for each exam
-    const { data: sessionRows } = await supabase
-      .from("exam_sessions").select("exam_id, status, id, score, max_score")
-      .eq("student_id", userId);
-    const map = {};
-    (sessionRows || []).forEach(s => { map[s.exam_id] = s; });
-    setSessions(map);
-
-    // Load retake requests
-    const { data: retakeRows } = await supabase
-      .from("retake_requests").select("exam_id, status").eq("student_id", userId);
-    const rmap = {};
-    (retakeRows || []).forEach(r => { rmap[r.exam_id] = r; });
-    setRetakeRequests(rmap);
-
+    const { data: sd } = await supabase.auth.getSession();
+    if (!sd.session) { navigate("/login"); return; }
+    const uid = sd.session.user.id;
+    const { data: stu } = await supabase.from("students").select("*").eq("id", uid).single();
+    setStudent(stu);
+    const { data: tr } = await supabase.from("tracks").select("*").eq("id", stu.track_id).single();
+    setTrack(tr);
+    const { data: ex } = await supabase.from("exams").select("*").eq("track_id", stu.track_id).eq("is_published", true);
+    setExams(ex || []);
+    const { data: sess } = await supabase.from("exam_sessions").select("exam_id,status,id,score,max_score").eq("student_id", uid).neq("status", "reset");
+    const sm = {}; (sess || []).forEach(s => { sm[s.exam_id] = s; }); setSessions(sm);
+    const { data: rr } = await supabase.from("retake_requests").select("exam_id,status").eq("student_id", uid);
+    const rm = {}; (rr || []).forEach(r => { rm[r.exam_id] = r; }); setRetakeRequests(rm);
     setLoading(false);
   }
 
   async function submitRetakeRequest(examId) {
     setRequestStatus(s => ({ ...s, [examId]: "sending" }));
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData.session?.access_token;
+      const { data: sd } = await supabase.auth.getSession();
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/exams/retake-request`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${sd.session?.access_token}` },
         body: JSON.stringify({ exam_id: examId, reason: retakeReason }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Failed");
       setRequestStatus(s => ({ ...s, [examId]: "sent" }));
       setRetakeRequests(r => ({ ...r, [examId]: { status: "pending" } }));
-      setRequestingFor(null);
-      setRetakeReason("");
+      setRequestingFor(null); setRetakeReason("");
     } catch (err) {
       setRequestStatus(s => ({ ...s, [examId]: "error: " + err.message }));
     }
@@ -76,109 +58,98 @@ export default function TrackSelect() {
     navigate("/login");
   }
 
-  if (loading) return <Centered><p className="text-ash">Loading your track…</p></Centered>;
+  if (loading) return <div className="min-h-screen bg-ink flex items-center justify-center"><p className="text-ash animate-pulse">Loading…</p></div>;
 
   return (
-    <div className="min-h-screen bg-ink px-4 py-10 max-w-lg mx-auto">
+    <div className="min-h-screen bg-ink px-5 py-8 max-w-lg mx-auto animate-fade-in">
       <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="font-display text-2xl text-ivory">
-            {student.full_name.split(" ")[0]}
-          </h1>
+          <p className="text-hour text-xs font-mono uppercase tracking-widest mb-1">Golden Hour</p>
+          <h1 className="font-display text-2xl text-ivory">{student.full_name}</h1>
           <p className="text-ash text-sm mt-0.5">{track?.name}</p>
-          <p className="text-ash text-xs mt-1 font-mono">{student.unique_code}</p>
+          <p className="text-ash/50 text-xs mt-1 font-mono">{student.unique_code}</p>
         </div>
-        <button onClick={handleLogout} className="text-ash text-xs hover:text-ivory">Log out</button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <button onClick={handleLogout} className="text-ash text-xs hover:text-ivory transition">Log out</button>
+        </div>
       </div>
 
-      {exams.length === 0 && (
-        <p className="text-ash text-sm">No assessments published yet — check back shortly.</p>
-      )}
+      {exams.length === 0 && <p className="text-ash text-sm bg-surface rounded-xl p-6 text-center">No assessments published yet.</p>}
 
       <div className="space-y-4">
-        {exams.map((exam) => {
+        {exams.map(exam => {
           const session = sessions[exam.id];
           const isDone = session && ["submitted", "auto_submitted", "expired"].includes(session.status);
           const isReset = session?.status === "reset";
-          const retakeReq = retakeRequests[exam.id];
+          const retake = retakeRequests[exam.id];
           const isOpen = requestingFor === exam.id;
 
           return (
-            <div key={exam.id} className="rounded-xl bg-surface border border-surface2 overflow-hidden">
-              <div className="px-5 py-4">
+            <div key={exam.id} className="rounded-2xl bg-surface border border-surface2 overflow-hidden animate-slide-up">
+              <div className="px-5 py-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-ivory font-medium">{exam.title}</p>
+                    <p className="text-ivory font-semibold">{exam.title}</p>
                     <p className="text-ash text-xs mt-1">
-                      {exam.objective_count + exam.code_count} questions · {exam.objective_time_seconds}s per question
+                      {exam.objective_count + exam.code_count} questions · {exam.objective_time_seconds}s each
                     </p>
                   </div>
-                  {isDone && (
-                    <span className="text-xs font-mono text-good bg-good/10 border border-good/20 rounded-full px-2.5 py-0.5 shrink-0">
-                      {session.score != null ? `${Math.round((session.score / session.max_score) * 100)}%` : "Done"}
+                  {isDone && session.score != null && (
+                    <span className={`text-xs font-mono px-3 py-1 rounded-full ${
+                      Math.round((session.score / session.max_score) * 100) >= 70
+                        ? "bg-good/15 text-good" : "bg-hour/15 text-hour"
+                    }`}>
+                      {Math.round((session.score / session.max_score) * 100)}%
                     </span>
                   )}
                 </div>
 
-                {/* Action area */}
                 {!session || isReset ? (
-                  <button
-                    onClick={() => navigate(`/exam/${exam.id}`)}
-                    className="mt-4 w-full py-3 rounded-lg bg-hour text-ink font-semibold hover:bg-hour/90 transition"
-                  >
+                  <button onClick={() => navigate(`/exam/${exam.id}`)}
+                    className="mt-4 w-full py-3.5 rounded-xl bg-hour text-ink font-bold hover:shadow-lg hover:shadow-hour/20 transition active:scale-[.98]">
                     {isReset ? "Start retake →" : "Start exam →"}
                   </button>
                 ) : isDone ? (
                   <div className="mt-4 space-y-2">
-                    <button
-                      onClick={() => navigate(`/results/${session.id}`)}
-                      className="w-full py-2.5 rounded-lg border border-surface2 text-ash text-sm hover:text-ivory transition"
-                    >
+                    <button onClick={() => navigate(`/results/${session.id}`)}
+                      className="w-full py-3 rounded-xl border border-surface2 text-ash text-sm hover:text-ivory hover:border-hourDim transition">
                       View result
                     </button>
-                    {!retakeReq && (
-                      <button
-                        onClick={() => setRequestingFor(isOpen ? null : exam.id)}
-                        className="w-full py-2.5 rounded-lg border border-hourDim/40 text-hour text-sm hover:border-hour transition"
-                      >
+                    {!retake && (
+                      <button onClick={() => setRequestingFor(isOpen ? null : exam.id)}
+                        className="w-full py-3 rounded-xl border border-hourDim/40 text-hour text-sm hover:border-hour transition">
                         Request retake
                       </button>
                     )}
-                    {retakeReq?.status === "pending" && (
-                      <p className="text-center text-xs text-ash py-1">
-                        ⏳ Retake request pending instructor approval
-                      </p>
+                    {retake?.status === "pending" && (
+                      <p className="text-center text-xs text-ash py-2 bg-surface2 rounded-xl">⏳ Retake request pending approval</p>
                     )}
-                    {retakeReq?.status === "denied" && (
-                      <p className="text-center text-xs text-alert py-1">
-                        Retake request was denied
-                      </p>
+                    {retake?.status === "approved" && (
+                      <button onClick={() => { load(); navigate(`/exam/${exam.id}`); }}
+                        className="w-full py-3.5 rounded-xl bg-good text-ink font-bold transition">
+                        Retake approved — Start →
+                      </button>
+                    )}
+                    {retake?.status === "denied" && (
+                      <p className="text-center text-xs text-alert py-2">Retake request denied</p>
                     )}
                   </div>
                 ) : (
-                  <button
-                    onClick={() => navigate(`/exam/${exam.id}`)}
-                    className="mt-4 w-full py-3 rounded-lg border border-hour text-hour font-medium hover:bg-hour/10 transition"
-                  >
+                  <button onClick={() => navigate(`/exam/${exam.id}`)}
+                    className="mt-4 w-full py-3.5 rounded-xl border-2 border-hour text-hour font-bold hover:bg-hour/10 transition">
                     Resume exam →
                   </button>
                 )}
 
-                {/* Retake request form */}
-                {isOpen && !retakeReq && (
-                  <div className="mt-3 space-y-2">
-                    <textarea
-                      value={retakeReason}
-                      onChange={e => setRetakeReason(e.target.value)}
-                      placeholder="Reason (optional)"
-                      rows={2}
-                      className="w-full rounded-lg bg-surface2 border border-surface2 px-3 py-2 text-sm text-ivory placeholder:text-ash resize-none focus:outline-none focus:border-hourDim"
-                    />
-                    <button
-                      onClick={() => submitRetakeRequest(exam.id)}
+                {isOpen && !retake && (
+                  <div className="mt-3 space-y-2 animate-scale-in">
+                    <textarea value={retakeReason} onChange={e => setRetakeReason(e.target.value)}
+                      placeholder="Reason for retake (optional)" rows={2}
+                      className="w-full rounded-xl bg-surface2 border border-surface2 px-4 py-2.5 text-sm text-ivory placeholder:text-ash/40 resize-none focus:outline-none focus:ring-1 focus:ring-hour" />
+                    <button onClick={() => submitRetakeRequest(exam.id)}
                       disabled={requestStatus[exam.id] === "sending"}
-                      className="w-full py-2.5 rounded-lg bg-hourDim text-ivory text-sm disabled:opacity-50"
-                    >
+                      className="w-full py-3 rounded-xl bg-hourDim text-ivory text-sm font-medium disabled:opacity-50 transition">
                       {requestStatus[exam.id] === "sending" ? "Sending…" : "Submit request"}
                     </button>
                     {requestStatus[exam.id]?.startsWith("error") && (
@@ -193,8 +164,4 @@ export default function TrackSelect() {
       </div>
     </div>
   );
-}
-
-function Centered({ children }) {
-  return <div className="min-h-screen flex items-center justify-center">{children}</div>;
 }

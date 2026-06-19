@@ -4,8 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import ALLOWED_ORIGINS
-from routers import exams, monitoring
-from routers import retake
+from routers import exams, monitoring, retake, admin
 
 
 @asynccontextmanager
@@ -28,6 +27,7 @@ app.add_middleware(
 app.include_router(exams.router)
 app.include_router(monitoring.router)
 app.include_router(retake.router)
+app.include_router(admin.router)
 
 
 @app.get("/health")
