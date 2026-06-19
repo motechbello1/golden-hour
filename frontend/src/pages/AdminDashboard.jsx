@@ -18,7 +18,9 @@ export default function AdminDashboard() {
   const [exams, setExams] = useState([]);
   const [proctorEvents, setProctorEvents] = useState([]);
   const [editingExam, setEditingExam] = useState(null);
+  const [scores, setScores] = useState([]);
   const [actionStatus, setActionStatus] = useState({});
+  const [snapshotUrl, setSnapshotUrl] = useState(null);
   const wsRef = useRef(null);
 
   useEffect(() => {
@@ -35,16 +37,31 @@ export default function AdminDashboard() {
   }, [unlocked]);
 
   async function loadAll() {
-    const [sess, ret, ex, pe] = await Promise.all([
+    const [sess, ret, ex, pe, sc] = await Promise.all([
       adminFetch("/admin/sessions"),
       adminFetch("/admin/retake-requests"),
       adminFetch("/admin/exams"),
       adminFetch("/admin/proctor-events"),
+      adminFetch("/admin/scores"),
     ]);
     setSessions(sess);
     setRetakes(ret);
     setExams(ex);
     setProctorEvents(pe);
+    setScores(sc);
+  }
+
+  async function viewSnapshot(path) {
+    try {
+      const res = await fetch(`${API}/admin/snapshot?path=${encodeURIComponent(path)}`, {
+        headers: { "x-admin-key": ADMIN_KEY }
+      });
+      if (!res.ok) throw new Error("Failed to load");
+      const data = await res.json();
+      setSnapshotUrl(data.url);
+    } catch (err) {
+      alert("Could not load snapshot: " + err.message);
+    }
   }
 
   async function handleRetake(id, action) {
@@ -103,6 +120,7 @@ export default function AdminDashboard() {
     { id: "sessions", label: "Sessions", badge: activeSessions || null },
     { id: "retakes", label: "Retakes", badge: pendingRetakes || null },
     { id: "integrity", label: "Integrity", badge: (hardEvents + softEvents) || null },
+    { id: "scores", label: "Scores", badge: scores.length || null },
     { id: "exams", label: "Exam Config" },
     { id: "live", label: "Live Feed" },
   ];
@@ -238,7 +256,10 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex items-center gap-2">
                   {e.snapshot_url && (
-                    <span className="text-hour text-xs font-mono bg-hour/10 rounded-lg px-2 py-1">📷 Snapshot</span>
+                    <button onClick={() => viewSnapshot(e.snapshot_url)}
+                      className="text-hour text-xs font-mono bg-hour/10 rounded-lg px-3 py-1.5 hover:bg-hour/20 transition cursor-pointer">
+                      📷 View
+                    </button>
                   )}
                   <span className={`text-xs font-mono px-2 py-0.5 rounded-full ${
                     e.severity === "hard" ? "bg-alert/15 text-alert" : "bg-hour/15 text-hour"
@@ -246,6 +267,65 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* SCORES */}
+        {tab === "scores" && (
+          <div className="space-y-2">
+            {scores.length === 0 && <Empty>No completed exams yet</Empty>}
+            
+            {/* Summary stats */}
+            {scores.length > 0 && (
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="bg-surface border border-surface2 rounded-xl p-4 text-center">
+                  <p className="font-mono text-2xl font-bold text-ivory">{scores.length}</p>
+                  <p className="text-ash text-xs">Completed</p>
+                </div>
+                <div className="bg-surface border border-surface2 rounded-xl p-4 text-center">
+                  <p className="font-mono text-2xl font-bold text-good">
+                    {scores.filter(s => s.score != null && s.max_score && (s.score / s.max_score) >= 0.7).length}
+                  </p>
+                  <p className="text-ash text-xs">Passed (≥70%)</p>
+                </div>
+                <div className="bg-surface border border-surface2 rounded-xl p-4 text-center">
+                  <p className="font-mono text-2xl font-bold text-hour">
+                    {scores.filter(s => s.score != null && s.max_score).length > 0
+                      ? Math.round(scores.filter(s => s.score != null && s.max_score).reduce((a, s) => a + (s.score / s.max_score) * 100, 0) / scores.filter(s => s.score != null && s.max_score).length)
+                      : 0}%
+                  </p>
+                  <p className="text-ash text-xs">Average</p>
+                </div>
+              </div>
+            )}
+
+            {/* Score rows */}
+            {scores.map(s => {
+              const pct = s.score != null && s.max_score ? Math.round((s.score / s.max_score) * 100) : null;
+              const passed = pct !== null && pct >= 70;
+              return (
+                <div key={s.id} className="flex items-center justify-between rounded-xl bg-surface border border-surface2 px-4 py-3 animate-slide-up">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-2 h-2 rounded-full ${passed ? "bg-good" : "bg-alert"}`} />
+                    <div>
+                      <p className="text-ivory text-sm font-medium">{s.students?.full_name || "Unknown"}</p>
+                      <p className="text-ash text-xs font-mono">{s.students?.unique_code}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-ash text-xs">{s.exams?.title}</span>
+                    <span className={`font-mono text-sm font-bold ${passed ? "text-good" : pct !== null && pct >= 50 ? "text-hour" : "text-alert"}`}>
+                      {pct !== null ? `${pct}%` : "—"}
+                    </span>
+                    <span className="text-ash text-xs font-mono">{s.score}/{s.max_score}</span>
+                    <Badge status={s.status} />
+                    {s.submitted_at && (
+                      <span className="text-ash/50 text-xs hidden sm:block">{new Date(s.submitted_at).toLocaleDateString()}</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -312,6 +392,22 @@ export default function AdminDashboard() {
             ))}
           </div>
         )}
+      </div>
+      <SnapshotModal url={snapshotUrl} onClose={() => setSnapshotUrl(null)} />
+    </div>
+  );
+}
+
+function SnapshotModal({ url, onClose }) {
+  if (!url) return null;
+  return (
+    <div className="fixed inset-0 z-50 bg-ink/80 backdrop-blur-sm flex items-center justify-center p-6" onClick={onClose}>
+      <div className="bg-surface rounded-2xl border border-surface2 p-4 max-w-lg w-full animate-scale-in" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-ivory text-sm font-semibold">Integrity Snapshot</p>
+          <button onClick={onClose} className="text-ash hover:text-ivory text-lg transition">✕</button>
+        </div>
+        <img src={url} alt="Proctor snapshot" className="w-full rounded-xl border border-surface2" />
       </div>
     </div>
   );

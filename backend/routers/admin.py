@@ -111,3 +111,31 @@ def update_exam_config(exam_id: str, body: ExamConfigUpdate, x_admin_key: str = 
         "paraphrase": body.paraphrase,
     }).eq("id", exam_id).execute()
     return {"message": "Updated"}
+
+
+# ── Snapshot viewer ──
+@router.get("/snapshot")
+def get_snapshot_url(path: str, x_admin_key: str = Header(...)):
+    _check_key(x_admin_key)
+    if not path:
+        raise HTTPException(400, "No path provided")
+    try:
+        signed = supabase.storage.from_("proctor-snapshots").create_signed_url(path, 300)
+        return {"url": signed["signedURL"]}
+    except Exception as e:
+        raise HTTPException(500, f"Could not generate URL: {str(e)}")
+
+
+# ── Student scores ──
+@router.get("/scores")
+def list_scores(x_admin_key: str = Header(...)):
+    _check_key(x_admin_key)
+    data = (
+        supabase.table("exam_sessions")
+        .select("id, status, score, max_score, started_at, submitted_at, students(full_name, unique_code), exams(title)")
+        .in_("status", ["submitted", "auto_submitted", "expired"])
+        .order("submitted_at", desc=True)
+        .limit(500)
+        .execute().data
+    )
+    return data or []
