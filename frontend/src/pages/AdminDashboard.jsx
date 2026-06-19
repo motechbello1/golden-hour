@@ -22,6 +22,7 @@ export default function AdminDashboard() {
   const [actionStatus, setActionStatus] = useState({});
   const [snapshotUrl, setSnapshotUrl] = useState(null);
   const wsRef = useRef(null);
+  const [liveFeeds, setLiveFeeds] = useState({}); // session_id -> {name, code, snapshot_base64, lastUpdate}
 
   useEffect(() => {
     if (!unlocked) return;
@@ -30,7 +31,19 @@ export default function AdminDashboard() {
     const ws = new WebSocket(`${API.replace(/^http/, "ws")}/ws/admin/live`);
     ws.onmessage = (msg) => {
       const d = JSON.parse(msg.data);
-      setEvents(p => [{ ...d, at: new Date().toLocaleTimeString() }, ...p].slice(0, 80));
+      if (d.type === "live_snapshot") {
+        setLiveFeeds(prev => ({
+          ...prev,
+          [d.session_id]: {
+            name: d.name || "Student",
+            code: d.code || "",
+            snapshot_base64: d.snapshot_base64,
+            lastUpdate: Date.now(),
+          }
+        }));
+      } else {
+        setEvents(p => [{ ...d, at: new Date().toLocaleTimeString() }, ...p].slice(0, 80));
+      }
     };
     wsRef.current = ws;
     return () => { clearInterval(poll); ws.close(); };
@@ -120,6 +133,7 @@ export default function AdminDashboard() {
     { id: "sessions", label: "Sessions", badge: activeSessions || null },
     { id: "retakes", label: "Retakes", badge: pendingRetakes || null },
     { id: "integrity", label: "Integrity", badge: (hardEvents + softEvents) || null },
+    { id: "cameras", label: "Live Cameras", badge: Object.keys(liveFeeds).length || null },
     { id: "scores", label: "Scores", badge: scores.length || null },
     { id: "exams", label: "Exam Config" },
     { id: "live", label: "Live Feed" },
@@ -188,6 +202,11 @@ export default function AdminDashboard() {
                     </span>
                   )}
                   <Badge status={s.status} />
+                  {s.auto_submit_reason && (
+                    <span className="text-alert text-xs bg-alert/10 rounded-lg px-2 py-0.5 capitalize">
+                      {s.auto_submit_reason}
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -270,6 +289,39 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* LIVE CAMERAS */}
+        {tab === "cameras" && (
+          <div>
+            {Object.keys(liveFeeds).length === 0 && (
+              <Empty>No active camera feeds — feeds appear here when students are taking exams</Empty>
+            )}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {Object.entries(liveFeeds).map(([sid, feed]) => {
+                const stale = Date.now() - feed.lastUpdate > 30000;
+                return (
+                  <div key={sid} className={`rounded-xl border overflow-hidden animate-scale-in ${
+                    stale ? "border-surface2 opacity-40" : "border-hourDim/30"
+                  }`}>
+                    {feed.snapshot_base64 && (
+                      <img
+                        src={`data:image/jpeg;base64,${feed.snapshot_base64}`}
+                        alt={feed.name}
+                        className="w-full aspect-[4/3] object-cover bg-surface"
+                        style={{ transform: "scaleX(-1)" }}
+                      />
+                    )}
+                    <div className="bg-surface px-3 py-2">
+                      <p className="text-ivory text-xs font-medium truncate">{feed.name}</p>
+                      <p className="text-ash text-xs font-mono">{feed.code}</p>
+                      {stale && <p className="text-alert text-xs mt-0.5">Feed stale</p>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* SCORES */}
         {tab === "scores" && (
           <div className="space-y-2">
@@ -319,6 +371,9 @@ export default function AdminDashboard() {
                     </span>
                     <span className="text-ash text-xs font-mono">{s.score}/{s.max_score}</span>
                     <Badge status={s.status} />
+                    {s.auto_submit_reason && (
+                      <span className="text-alert text-xs bg-alert/10 rounded-lg px-2 py-0.5 capitalize">{s.auto_submit_reason}</span>
+                    )}
                     {s.submitted_at && (
                       <span className="text-ash/50 text-xs hidden sm:block">{new Date(s.submitted_at).toLocaleDateString()}</span>
                     )}

@@ -46,6 +46,11 @@ export default function Exam() {
     [sendEvent]
   );
 
+  const handleLiveSnapshot = useCallback(
+    (snapshot_base64) => sendEvent({ type: "live_snapshot", snapshot_base64 }),
+    [sendEvent]
+  );
+
   const connectSocket = useCallback((sid) => {
     const ws = new WebSocket(proctorSocketUrl(sid));
     ws.onmessage = (e) => {
@@ -256,7 +261,7 @@ export default function Exam() {
         <div className={`font-mono text-3xl font-black tabular-nums transition-colors ${
           timerUrgent ? "text-alert animate-pulse" : timerWarn ? "text-orange-400" : "text-hour"
         }`}>{timeLeft}</div>
-        <ProctorCamera onFlag={handleFlag} includeSnapshots />
+        <ProctorCamera onFlag={handleFlag} onLiveSnapshot={handleLiveSnapshot} includeSnapshots />
       </header>
 
       <div className="shrink-0 h-1 bg-surface2">

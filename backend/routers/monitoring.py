@@ -7,11 +7,10 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from config import supabase, RECONNECT_GRACE_SECONDS
+from services.scoring import summarize_session
 
 router = APIRouter()
 
-# How long without a heartbeat before we consider a student disconnected
-# (not yet a violation — just "we lost their connection").
 HEARTBEAT_TIMEOUT_SECONDS = 15
 HARD_VIOLATIONS = {"fullscreen_exit", "tab_blur", "devtools_attempt"}
 
@@ -30,7 +29,7 @@ async def _broadcast_to_admins(message: dict):
         _admin_sockets.discard(ws)
 
 
-def _log_event(session_id: str, event_type: str, severity: str, meta: dict | None = None, snapshot_b64: str | None = None):
+def _log_event(session_id, event_type, severity, meta=None, snapshot_b64=None):
     snapshot_url = None
     if snapshot_b64:
         try:
@@ -40,26 +39,39 @@ def _log_event(session_id: str, event_type: str, severity: str, meta: dict | Non
             )
             snapshot_url = path
         except Exception:
-            pass  # snapshot storage is best-effort, never blocks the exam
+            pass
+    supabase.table("proctor_events").insert({
+        "session_id": session_id, "event_type": event_type,
+        "severity": severity, "meta": meta or {}, "snapshot_url": snapshot_url,
+    }).execute()
 
-    supabase.table("proctor_events").insert(
-        {
-            "session_id": session_id,
-            "event_type": event_type,
-            "severity": severity,
-            "meta": meta or {},
-            "snapshot_url": snapshot_url,
-        }
-    ).execute()
+
+def _calculate_and_store_score(session_id):
+    """Calculate score from answers submitted so far and store it on the session."""
+    try:
+        answers = supabase.table("exam_answers").select("is_correct").eq("session_id", session_id).execute().data
+        summary = summarize_session(answers)
+        supabase.table("exam_sessions").update({
+            "score": summary["score"],
+            "max_score": summary["max_score"],
+        }).eq("id", session_id).execute()
+    except Exception:
+        pass
+
+
+def _auto_submit_session(session_id, reason):
+    """Mark session as auto-submitted with reason, calculate score."""
+    supabase.table("exam_sessions").update({
+        "status": "auto_submitted",
+        "submitted_at": datetime.now(timezone.utc).isoformat(),
+    }).eq("id", session_id).execute()
+    # Log the specific reason as a hard event
+    _log_event(session_id, reason, "hard", {"auto_submit_reason": reason})
+    # Calculate score from whatever they answered so far
+    _calculate_and_store_score(session_id)
 
 
 async def heartbeat_watchdog():
-    """
-    Background loop: flips a session to 'disconnected' if its heartbeat
-    goes quiet, and to 'expired' if it stays quiet past the grace
-    window. This is what lets a real network/PC outage bypass the exam
-    cleanly instead of being treated as a cheating violation.
-    """
     while True:
         await asyncio.sleep(5)
         now = time.time()
@@ -72,13 +84,14 @@ async def heartbeat_watchdog():
             except Exception:
                 continue
             if session["status"] == "in_progress":
-                supabase.table("exam_sessions").update(
-                    {"status": "disconnected", "disconnected_at": datetime.now(timezone.utc).isoformat()}
-                ).eq("id", session_id).execute()
+                supabase.table("exam_sessions").update({
+                    "status": "disconnected",
+                    "disconnected_at": datetime.now(timezone.utc).isoformat()
+                }).eq("id", session_id).execute()
                 _log_event(session_id, "heartbeat_lost", "soft")
                 await _broadcast_to_admins({"type": "status", "session_id": session_id, "status": "disconnected"})
             elif session["status"] == "disconnected" and silence > RECONNECT_GRACE_SECONDS:
-                supabase.table("exam_sessions").update({"status": "expired"}).eq("id", session_id).execute()
+                _auto_submit_session(session_id, "connection_timeout")
                 await _broadcast_to_admins({"type": "status", "session_id": session_id, "status": "expired"})
                 _last_heartbeat.pop(session_id, None)
 
@@ -88,16 +101,23 @@ async def proctor_socket(ws: WebSocket, session_id: str):
     await ws.accept()
     _last_heartbeat[session_id] = time.time()
 
+    # Get student info for admin display
+    student_info = {}
     try:
-        session = supabase.table("exam_sessions").select("*").eq("id", session_id).single().execute().data
-        if session and session["status"] == "disconnected":
-            supabase.table("exam_sessions").update({"status": "in_progress", "disconnected_at": None}).eq(
-                "id", session_id
-            ).execute()
-            _log_event(session_id, "heartbeat_resumed", "soft")
-            await _broadcast_to_admins({"type": "status", "session_id": session_id, "status": "in_progress"})
+        session = supabase.table("exam_sessions").select("*, students(full_name, unique_code)").eq("id", session_id).single().execute().data
+        if session:
+            student_info = {
+                "name": session.get("students", {}).get("full_name", ""),
+                "code": session.get("students", {}).get("unique_code", ""),
+            }
+            if session["status"] == "disconnected":
+                supabase.table("exam_sessions").update({"status": "in_progress", "disconnected_at": None}).eq("id", session_id).execute()
+                _log_event(session_id, "heartbeat_resumed", "soft")
+                await _broadcast_to_admins({"type": "status", "session_id": session_id, "status": "in_progress", **student_info})
     except Exception:
         pass
+
+    await _broadcast_to_admins({"type": "student_connected", "session_id": session_id, **student_info})
 
     try:
         while True:
@@ -113,29 +133,39 @@ async def proctor_socket(ws: WebSocket, session_id: str):
                 _log_event(session_id, event_type, severity, msg.get("meta"))
 
                 if severity == "hard":
-                    supabase.table("exam_sessions").update({"status": "auto_submitted"}).eq("id", session_id).execute()
+                    _auto_submit_session(session_id, event_type)
                     await ws.send_json({"type": "auto_submitted", "reason": event_type})
-                    await _broadcast_to_admins(
-                        {"type": "violation", "session_id": session_id, "event_type": event_type, "severity": "hard"}
-                    )
+                    await _broadcast_to_admins({
+                        "type": "violation", "session_id": session_id,
+                        "event_type": event_type, "severity": "hard",
+                        "reason": event_type, **student_info
+                    })
                 else:
-                    await _broadcast_to_admins(
-                        {"type": "violation", "session_id": session_id, "event_type": event_type, "severity": "soft"}
-                    )
+                    await _broadcast_to_admins({
+                        "type": "violation", "session_id": session_id,
+                        "event_type": event_type, "severity": "soft", **student_info
+                    })
 
             elif msg_type == "flag":
-                # Soft camera-AI flags: no_face, multiple_faces, looking_away, phone_detected.
-                # Logged for review, never auto-punished on their own — lighting and
-                # webcam quality vary too much for a single flag to be reliable proof.
                 _log_event(session_id, msg.get("event_type", "no_face"), "soft", msg.get("meta"), msg.get("snapshot_base64"))
-                await _broadcast_to_admins(
-                    {"type": "flag", "session_id": session_id, "event_type": msg.get("event_type")}
-                )
+                await _broadcast_to_admins({
+                    "type": "flag", "session_id": session_id,
+                    "event_type": msg.get("event_type"), **student_info
+                })
+
+            elif msg_type == "live_snapshot":
+                # Forward the live camera frame to all admin sockets — not stored, just real-time
+                await _broadcast_to_admins({
+                    "type": "live_snapshot", "session_id": session_id,
+                    "snapshot_base64": msg.get("snapshot_base64"),
+                    **student_info
+                })
 
     except WebSocketDisconnect:
         pass
     finally:
         _last_heartbeat.pop(session_id, None)
+        await _broadcast_to_admins({"type": "student_disconnected", "session_id": session_id, **student_info})
 
 
 @router.websocket("/ws/admin/live")
@@ -144,7 +174,7 @@ async def admin_live(ws: WebSocket):
     _admin_sockets.add(ws)
     try:
         while True:
-            await ws.receive_text()  # admin socket is receive-only from our side; ignore client pings
+            await ws.receive_text()
     except WebSocketDisconnect:
         pass
     finally:

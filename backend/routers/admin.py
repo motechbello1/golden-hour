@@ -25,7 +25,24 @@ def list_sessions(x_admin_key: str = Header(...)):
         .limit(200)
         .execute().data
     )
-    return data or []
+    sessions = data or []
+    # For auto-submitted sessions, find the reason (last hard violation)
+    for s in sessions:
+        s["auto_submit_reason"] = None
+        if s["status"] in ("auto_submitted", "expired"):
+            events = (
+                supabase.table("proctor_events")
+                .select("event_type, meta")
+                .eq("session_id", s["id"])
+                .eq("severity", "hard")
+                .order("created_at", desc=True)
+                .limit(1)
+                .execute().data
+            )
+            if events:
+                reason = events[0].get("meta", {}).get("auto_submit_reason") or events[0]["event_type"]
+                s["auto_submit_reason"] = reason.replace("_", " ")
+    return sessions
 
 
 # ── Proctor / integrity events ──
@@ -138,4 +155,20 @@ def list_scores(x_admin_key: str = Header(...)):
         .limit(500)
         .execute().data
     )
-    return data or []
+    sessions = data or []
+    for s in sessions:
+        s["auto_submit_reason"] = None
+        if s["status"] in ("auto_submitted", "expired"):
+            events = (
+                supabase.table("proctor_events")
+                .select("event_type, meta")
+                .eq("session_id", s["id"])
+                .eq("severity", "hard")
+                .order("created_at", desc=True)
+                .limit(1)
+                .execute().data
+            )
+            if events:
+                reason = events[0].get("meta", {}).get("auto_submit_reason") or events[0]["event_type"]
+                s["auto_submit_reason"] = reason.replace("_", " ")
+    return sessions
