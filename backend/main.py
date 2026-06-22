@@ -18,10 +18,11 @@ app = FastAPI(title="Golden Hour Exam Engine", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,  # auth via headers not cookies
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 app.include_router(exams.router)

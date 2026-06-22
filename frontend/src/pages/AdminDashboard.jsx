@@ -4,8 +4,20 @@ import { ThemeToggle } from "../lib/ThemeContext.jsx";
 const API = import.meta.env.VITE_API_BASE_URL;
 const ADMIN_KEY = "golden-hour-admin-2024";
 
-function adminFetch(path) {
-  return fetch(`${API}${path}`, { headers: { "x-admin-key": ADMIN_KEY } }).then(r => r.ok ? r.json() : []);
+async function adminFetch(path) {
+  try {
+    const res = await fetch(`${API}${path}`, {
+      headers: { "x-admin-key": ADMIN_KEY },
+    });
+    if (!res.ok) {
+      console.error(`Admin API ${path} returned ${res.status}`);
+      return [];
+    }
+    return await res.json();
+  } catch (err) {
+    console.error(`Admin API ${path} failed:`, err.message);
+    return [];
+  }
 }
 
 export default function AdminDashboard() {
@@ -50,18 +62,12 @@ export default function AdminDashboard() {
   }, [unlocked]);
 
   async function loadAll() {
-    const [sess, ret, ex, pe, sc] = await Promise.all([
-      adminFetch("/admin/sessions"),
-      adminFetch("/admin/retake-requests"),
-      adminFetch("/admin/exams"),
-      adminFetch("/admin/proctor-events"),
-      adminFetch("/admin/scores"),
-    ]);
-    setSessions(sess);
-    setRetakes(ret);
-    setExams(ex);
-    setProctorEvents(pe);
-    setScores(sc);
+    // Each call is independent — one failing won't block the others
+    adminFetch("/admin/sessions").then(d => setSessions(d));
+    adminFetch("/admin/retake-requests").then(d => setRetakes(d));
+    adminFetch("/admin/exams").then(d => setExams(d));
+    adminFetch("/admin/proctor-events").then(d => setProctorEvents(d));
+    adminFetch("/admin/scores").then(d => setScores(d));
   }
 
   async function viewSnapshot(path) {
