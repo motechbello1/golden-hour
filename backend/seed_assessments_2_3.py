@@ -6,7 +6,8 @@ Seeds assessment 2 and 3 questions, then publishes both exams.
 Run AFTER applying supabase/assessment_groups_patch.sql
 """
 import json
-from config import supabase
+from config import get_supabase as _gc
+supabase = _gc()
 
 def main():
     # Get track

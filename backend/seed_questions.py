@@ -9,7 +9,8 @@ questions, so it won't duplicate on a second run.
 """
 import sys
 import json
-from config import supabase
+from config import get_supabase as _gc
+supabase = _gc()
 
 
 def main():

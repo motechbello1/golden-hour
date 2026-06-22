@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from config import supabase, RECONNECT_GRACE_SECONDS
+from config import get_supabase, RECONNECT_GRACE_SECONDS
 from services.scoring import summarize_session
 
 router = APIRouter()
@@ -34,13 +34,13 @@ def _log_event(session_id, event_type, severity, meta=None, snapshot_b64=None):
     if snapshot_b64:
         try:
             path = f"{session_id}/{uuid.uuid4()}.jpg"
-            supabase.storage.from_("proctor-snapshots").upload(
+            get_supabase().storage.from_("proctor-snapshots").upload(
                 path, base64.b64decode(snapshot_b64), {"content-type": "image/jpeg"}
             )
             snapshot_url = path
         except Exception:
             pass
-    supabase.table("proctor_events").insert({
+    get_supabase().table("proctor_events").insert({
         "session_id": session_id, "event_type": event_type,
         "severity": severity, "meta": meta or {}, "snapshot_url": snapshot_url,
     }).execute()
@@ -49,9 +49,9 @@ def _log_event(session_id, event_type, severity, meta=None, snapshot_b64=None):
 def _calculate_and_store_score(session_id):
     """Calculate score from answers submitted so far and store it on the session."""
     try:
-        answers = supabase.table("exam_answers").select("is_correct").eq("session_id", session_id).execute().data
+        answers = get_supabase().table("exam_answers").select("is_correct").eq("session_id", session_id).execute().data
         summary = summarize_session(answers)
-        supabase.table("exam_sessions").update({
+        get_supabase().table("exam_sessions").update({
             "score": summary["score"],
             "max_score": summary["max_score"],
         }).eq("id", session_id).execute()
@@ -61,7 +61,7 @@ def _calculate_and_store_score(session_id):
 
 def _auto_submit_session(session_id, reason):
     """Mark session as auto-submitted with reason, calculate score."""
-    supabase.table("exam_sessions").update({
+    get_supabase().table("exam_sessions").update({
         "status": "auto_submitted",
         "submitted_at": datetime.now(timezone.utc).isoformat(),
     }).eq("id", session_id).execute()
@@ -80,11 +80,11 @@ async def heartbeat_watchdog():
             if silence < HEARTBEAT_TIMEOUT_SECONDS:
                 continue
             try:
-                session = supabase.table("exam_sessions").select("*").eq("id", session_id).single().execute().data
+                session = get_supabase().table("exam_sessions").select("*").eq("id", session_id).single().execute().data
             except Exception:
                 continue
             if session["status"] == "in_progress":
-                supabase.table("exam_sessions").update({
+                get_supabase().table("exam_sessions").update({
                     "status": "disconnected",
                     "disconnected_at": datetime.now(timezone.utc).isoformat()
                 }).eq("id", session_id).execute()
@@ -104,14 +104,14 @@ async def proctor_socket(ws: WebSocket, session_id: str):
     # Get student info for admin display
     student_info = {}
     try:
-        session = supabase.table("exam_sessions").select("*, students(full_name, unique_code)").eq("id", session_id).single().execute().data
+        session = get_supabase().table("exam_sessions").select("*, students(full_name, unique_code)").eq("id", session_id).single().execute().data
         if session:
             student_info = {
                 "name": session.get("students", {}).get("full_name", ""),
                 "code": session.get("students", {}).get("unique_code", ""),
             }
             if session["status"] == "disconnected":
-                supabase.table("exam_sessions").update({"status": "in_progress", "disconnected_at": None}).eq("id", session_id).execute()
+                get_supabase().table("exam_sessions").update({"status": "in_progress", "disconnected_at": None}).eq("id", session_id).execute()
                 _log_event(session_id, "heartbeat_resumed", "soft")
                 await _broadcast_to_admins({"type": "status", "session_id": session_id, "status": "in_progress", **student_info})
     except Exception:

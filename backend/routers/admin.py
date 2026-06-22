@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel
 from datetime import datetime, timezone
-import traceback
 
-from config import supabase
+from config import get_supabase
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -18,66 +17,38 @@ def _check_key(key: str):
 @router.get("/sessions")
 def list_sessions(x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    try:
-        data = (
-            supabase.table("exam_sessions")
-            .select("*, students(full_name, unique_code)")
-            .order("started_at", desc=True)
-            .limit(200)
-            .execute().data
-        )
-        return data or []
-    except Exception as e:
-        print(f"[ADMIN] /sessions error: {e}")
-        traceback.print_exc()
-        return []
+    db = get_supabase()
+    data = db.table("exam_sessions").select("*, students(full_name, unique_code)").order("started_at", desc=True).limit(200).execute().data
+    return data or []
 
 
 @router.get("/proctor-events")
 def list_proctor_events(x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    try:
-        data = (
-            supabase.table("proctor_events")
-            .select("*, exam_sessions(students(full_name, unique_code))")
-            .order("created_at", desc=True)
-            .limit(200)
-            .execute().data
-        )
-        return data or []
-    except Exception as e:
-        print(f"[ADMIN] /proctor-events error: {e}")
-        traceback.print_exc()
-        return []
+    db = get_supabase()
+    data = db.table("proctor_events").select("*, exam_sessions(students(full_name, unique_code))").order("created_at", desc=True).limit(200).execute().data
+    return data or []
 
 
 @router.get("/retake-requests")
 def list_retake_requests(x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    try:
-        data = (
-            supabase.table("retake_requests")
-            .select("*, students(full_name, unique_code), exams(title)")
-            .order("created_at", desc=True)
-            .execute().data
-        )
-        return data or []
-    except Exception as e:
-        print(f"[ADMIN] /retake-requests error: {e}")
-        traceback.print_exc()
-        return []
+    db = get_supabase()
+    data = db.table("retake_requests").select("*, students(full_name, unique_code), exams(title)").order("created_at", desc=True).execute().data
+    return data or []
 
 
 @router.post("/retake-requests/{request_id}/approve")
 def approve_retake(request_id: str, x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    req = supabase.table("retake_requests").select("*").eq("id", request_id).single().execute().data
+    db = get_supabase()
+    req = db.table("retake_requests").select("*").eq("id", request_id).single().execute().data
     if not req:
         raise HTTPException(404, "Not found")
     if req["status"] != "pending":
         raise HTTPException(409, f"Already {req['status']}")
-    supabase.table("exam_sessions").update({"status": "reset"}).eq("id", req["session_id"]).execute()
-    supabase.table("retake_requests").update({
+    db.table("exam_sessions").update({"status": "reset"}).eq("id", req["session_id"]).execute()
+    db.table("retake_requests").update({
         "status": "approved", "reviewed_at": datetime.now(timezone.utc).isoformat(),
     }).eq("id", request_id).execute()
     return {"message": "Retake approved"}
@@ -86,7 +57,8 @@ def approve_retake(request_id: str, x_admin_key: str = Header(...)):
 @router.post("/retake-requests/{request_id}/deny")
 def deny_retake(request_id: str, x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    supabase.table("retake_requests").update({
+    db = get_supabase()
+    db.table("retake_requests").update({
         "status": "denied", "reviewed_at": datetime.now(timezone.utc).isoformat(),
     }).eq("id", request_id).execute()
     return {"message": "Retake denied"}
@@ -95,47 +67,32 @@ def deny_retake(request_id: str, x_admin_key: str = Header(...)):
 @router.get("/exams")
 def list_exams(x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    try:
-        data = (
-            supabase.table("exams")
-            .select("*, tracks(name, slug)")
-            .order("created_at", desc=True)
-            .execute().data
-        )
-        return data or []
-    except Exception as e:
-        print(f"[ADMIN] /exams error: {e}")
-        traceback.print_exc()
-        return []
+    db = get_supabase()
+    data = db.table("exams").select("*, tracks(name, slug)").order("created_at", desc=True).execute().data
+    return data or []
 
 
 @router.get("/scores")
 def list_scores(x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    try:
-        data = (
-            supabase.table("exam_sessions")
-            .select("id, status, score, max_score, started_at, submitted_at, current_index, students(full_name, unique_code), exams(title)")
-            .in_("status", ["submitted", "auto_submitted", "expired"])
-            .order("submitted_at", desc=True)
-            .limit(500)
-            .execute().data
-        )
-        return data or []
-    except Exception as e:
-        print(f"[ADMIN] /scores error: {e}")
-        traceback.print_exc()
-        return []
+    db = get_supabase()
+    data = (
+        db.table("exam_sessions")
+        .select("id, status, score, max_score, started_at, submitted_at, current_index, students(full_name, unique_code), exams(title)")
+        .in_("status", ["submitted", "auto_submitted", "expired"])
+        .order("submitted_at", desc=True)
+        .limit(500)
+        .execute().data
+    )
+    return data or []
 
 
 @router.get("/snapshot")
 def get_snapshot_url(path: str, x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    try:
-        signed = supabase.storage.from_("proctor-snapshots").create_signed_url(path, 300)
-        return {"url": signed["signedURL"]}
-    except Exception as e:
-        raise HTTPException(500, f"Could not load: {str(e)}")
+    db = get_supabase()
+    signed = db.storage.from_("proctor-snapshots").create_signed_url(path, 300)
+    return {"url": signed["signedURL"]}
 
 
 class ExamConfigUpdate(BaseModel):
@@ -149,7 +106,8 @@ class ExamConfigUpdate(BaseModel):
 @router.put("/exams/{exam_id}")
 def update_exam_config(exam_id: str, body: ExamConfigUpdate, x_admin_key: str = Header(...)):
     _check_key(x_admin_key)
-    supabase.table("exams").update({
+    db = get_supabase()
+    db.table("exams").update({
         "objective_count": body.objective_count,
         "code_count": body.code_count,
         "objective_time_seconds": body.objective_time_seconds,

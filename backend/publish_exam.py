@@ -2,7 +2,8 @@
 Run after seed_questions.py to publish or update the exam.
 python publish_exam.py
 """
-from config import supabase
+from config import get_supabase as _gc
+supabase = _gc()
 
 SECONDS_PER_QUESTION = 25
 QUESTIONS_PER_EXAM = 25   # drawn randomly from the 100-question bank per student

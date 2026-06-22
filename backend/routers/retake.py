@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 
-from config import supabase
+from config import get_supabase
 from routers.auth import get_current_student
 
 router = APIRouter()
@@ -17,7 +17,7 @@ class RetakeRequestBody(BaseModel):
 @router.post("/exams/retake-request")
 def request_retake(body: RetakeRequestBody, student: dict = Depends(get_current_student)):
     session = (
-        supabase.table("exam_sessions").select("id, status")
+        get_supabase().table("exam_sessions").select("id, status")
         .eq("exam_id", body.exam_id).eq("student_id", student["id"])
         .neq("status", "reset")
         .execute().data
@@ -28,14 +28,14 @@ def request_retake(body: RetakeRequestBody, student: dict = Depends(get_current_
         raise HTTPException(409, "Exam not yet completed")
 
     existing = (
-        supabase.table("retake_requests").select("id, status")
+        get_supabase().table("retake_requests").select("id, status")
         .eq("student_id", student["id"]).eq("exam_id", body.exam_id)
         .eq("status", "pending").execute().data
     )
     if existing:
         raise HTTPException(409, "You already have a pending retake request")
 
-    supabase.table("retake_requests").insert({
+    get_supabase().table("retake_requests").insert({
         "student_id": student["id"], "exam_id": body.exam_id,
         "session_id": session[0]["id"], "reason": body.reason or "", "status": "pending",
     }).execute()

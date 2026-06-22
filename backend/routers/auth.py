@@ -1,5 +1,5 @@
 from fastapi import Header, HTTPException
-from config import supabase
+from config import get_supabase
 
 
 def get_current_student(authorization: str = Header(...)) -> dict:
@@ -14,7 +14,7 @@ def get_current_student(authorization: str = Header(...)) -> dict:
     token = authorization.removeprefix("Bearer ").strip()
 
     try:
-        user_res = supabase.auth.get_user(token)
+        user_res = get_supabase().auth.get_user(token)
     except Exception:
         raise HTTPException(401, "Invalid or expired session")
 
@@ -22,7 +22,7 @@ def get_current_student(authorization: str = Header(...)) -> dict:
     if not user:
         raise HTTPException(401, "Invalid or expired session")
 
-    student_res = supabase.table("students").select("*").eq("id", user.id).single().execute()
+    student_res = get_supabase().table("students").select("*").eq("id", user.id).single().execute()
     if not student_res.data:
         raise HTTPException(404, "No student record for this account yet — complete registration first")
 
