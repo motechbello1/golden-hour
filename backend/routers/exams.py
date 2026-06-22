@@ -61,7 +61,7 @@ def start_or_resume_exam(req: StartExamRequest, student=Depends(get_current_stud
             session["status"] = "in_progress"
     else:
         bank = _question_bank_for_track(exam["track_id"])
-        question_order, option_shuffles = build_paper(exam, bank, student["unique_code"])
+        question_order, option_shuffles = build_paper(exam, bank, student["unique_code"], exam.get("question_group"))
         created = supabase.table("exam_sessions").insert({
             "exam_id": exam["id"], "student_id": student["id"],
             "question_order": question_order, "option_shuffles": option_shuffles,

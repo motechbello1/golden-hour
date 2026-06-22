@@ -1,0 +1,1682 @@
+[
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nfor i in range(10, 0, -2):\n    print(i, end=' ')",
+    "options": [
+      {
+        "id": "a",
+        "text": "10 8 6 4 2 0"
+      },
+      {
+        "id": "b",
+        "text": "0 2 4 6 8 10"
+      },
+      {
+        "id": "c",
+        "text": "10 8 6 4 2"
+      },
+      {
+        "id": "d",
+        "text": "9 7 5 3 1"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nfruits = ['apple', 'banana', 'mango']\nfor fruit in fruits:\n    print(fruit.upper(), end=' ')",
+    "options": [
+      {
+        "id": "a",
+        "text": "apple banana mango"
+      },
+      {
+        "id": "b",
+        "text": "APPLE BANANA MANGO"
+      },
+      {
+        "id": "c",
+        "text": "Apple Banana Mango"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is wrong with this code?\n\ntotal = 0\nfor i in range(1, 6):\ntotal += i\nprint(total)",
+    "options": [
+      {
+        "id": "a",
+        "text": "total is not initialised correctly"
+      },
+      {
+        "id": "b",
+        "text": "range should start at 0"
+      },
+      {
+        "id": "c",
+        "text": "The body of the loop is not indented"
+      },
+      {
+        "id": "d",
+        "text": "print should be inside the loop"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\ncount = 0\nfor i in range(1, 11):\n    if i % 2 != 0:\n        count += 1\nprint(count)",
+    "options": [
+      {
+        "id": "a",
+        "text": "5"
+      },
+      {
+        "id": "b",
+        "text": "6"
+      },
+      {
+        "id": "c",
+        "text": "10"
+      },
+      {
+        "id": "d",
+        "text": "0"
+      }
+    ],
+    "correct_option_id": "a"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nx = 10\nwhile x > 0:\n    x -= 3\nprint(x)",
+    "options": [
+      {
+        "id": "a",
+        "text": "0"
+      },
+      {
+        "id": "b",
+        "text": "1"
+      },
+      {
+        "id": "c",
+        "text": "-2"
+      },
+      {
+        "id": "d",
+        "text": "3"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What does break do inside a while loop?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pauses the loop temporarily"
+      },
+      {
+        "id": "b",
+        "text": "Skips the current iteration and continues"
+      },
+      {
+        "id": "c",
+        "text": "Exits the loop immediately"
+      },
+      {
+        "id": "d",
+        "text": "Resets the loop variable"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\ni = 0\nwhile i < 5:\n    i += 1\n    if i == 3:\n        continue\n    print(i, end=' ')",
+    "options": [
+      {
+        "id": "a",
+        "text": "1 2 3 4 5"
+      },
+      {
+        "id": "b",
+        "text": "1 2 4 5"
+      },
+      {
+        "id": "c",
+        "text": "0 1 2 4 5"
+      },
+      {
+        "id": "d",
+        "text": "1 2 3 4"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is wrong with this code?\n\nscore = -1\nwhile score < 0 or score > 100:\n    score = int(input('Enter score: '))\n    if score < 0 or score > 100\n        print('Invalid')",
+    "options": [
+      {
+        "id": "a",
+        "text": "The while condition is wrong"
+      },
+      {
+        "id": "b",
+        "text": "The colon is missing after the if condition"
+      },
+      {
+        "id": "c",
+        "text": "score should start at 0"
+      },
+      {
+        "id": "d",
+        "text": "input should not be inside a while loop"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What happens if you forget to update the variable being checked inside a while loop?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The loop runs exactly once"
+      },
+      {
+        "id": "b",
+        "text": "The loop raises a ValueError"
+      },
+      {
+        "id": "c",
+        "text": "The loop runs forever (infinite loop)"
+      },
+      {
+        "id": "d",
+        "text": "Python automatically exits after 100 iterations"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nfruits = ['apple', 'banana', 'mango', 'grape']\nprint(fruits[-2])",
+    "options": [
+      {
+        "id": "a",
+        "text": "grape"
+      },
+      {
+        "id": "b",
+        "text": "mango"
+      },
+      {
+        "id": "c",
+        "text": "banana"
+      },
+      {
+        "id": "d",
+        "text": "apple"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nnums = [5, 2, 8, 1, 9]\nnums.sort()\nprint(nums[0], nums[-1])",
+    "options": [
+      {
+        "id": "a",
+        "text": "5 9"
+      },
+      {
+        "id": "b",
+        "text": "1 9"
+      },
+      {
+        "id": "c",
+        "text": "9 1"
+      },
+      {
+        "id": "d",
+        "text": "2 8"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the difference between .sort() and sorted()?",
+    "options": [
+      {
+        "id": "a",
+        "text": ".sort() returns a new list, sorted() modifies in place"
+      },
+      {
+        "id": "b",
+        "text": ".sort() modifies the original list, sorted() returns a new list"
+      },
+      {
+        "id": "c",
+        "text": "They are identical"
+      },
+      {
+        "id": "d",
+        "text": "sorted() only works on numbers"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nx = [1, 2, 3, 4, 5]\nprint(x[1:4])",
+    "options": [
+      {
+        "id": "a",
+        "text": "[1, 2, 3, 4]"
+      },
+      {
+        "id": "b",
+        "text": "[2, 3, 4, 5]"
+      },
+      {
+        "id": "c",
+        "text": "[2, 3, 4]"
+      },
+      {
+        "id": "d",
+        "text": "[1, 2, 3]"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nnums = [3, 6, 9]\nnums.append(12)\nnums.insert(1, 0)\nprint(nums)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[0, 3, 6, 9, 12]"
+      },
+      {
+        "id": "b",
+        "text": "[3, 0, 6, 9, 12]"
+      },
+      {
+        "id": "c",
+        "text": "[3, 6, 9, 12, 0]"
+      },
+      {
+        "id": "d",
+        "text": "[0, 3, 6, 9]"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nitems = [10, 20, 30]\nitems.pop()\nprint(items)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[20, 30]"
+      },
+      {
+        "id": "b",
+        "text": "[10, 30]"
+      },
+      {
+        "id": "c",
+        "text": "[10, 20]"
+      },
+      {
+        "id": "d",
+        "text": "[10, 20, 30]"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What does 'mango' in ['apple', 'banana', 'mango'] evaluate to?",
+    "options": [
+      {
+        "id": "a",
+        "text": "2"
+      },
+      {
+        "id": "b",
+        "text": "True"
+      },
+      {
+        "id": "c",
+        "text": "'mango'"
+      },
+      {
+        "id": "d",
+        "text": "False"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nstudent = {'name': 'Amina', 'score': 88}\nprint(student['age'])",
+    "options": [
+      {
+        "id": "a",
+        "text": "None"
+      },
+      {
+        "id": "b",
+        "text": "0"
+      },
+      {
+        "id": "c",
+        "text": "KeyError"
+      },
+      {
+        "id": "d",
+        "text": "Error \u2014 key does not exist"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "Which line safely gets a value from a dictionary without crashing if the key is missing?",
+    "options": [
+      {
+        "id": "a",
+        "text": "student['phone']"
+      },
+      {
+        "id": "b",
+        "text": "student.get('phone')"
+      },
+      {
+        "id": "c",
+        "text": "student.find('phone')"
+      },
+      {
+        "id": "d",
+        "text": "student.fetch('phone')"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nd = {'a': 1, 'b': 2, 'a': 3}\nprint(d['a'])",
+    "options": [
+      {
+        "id": "a",
+        "text": "1"
+      },
+      {
+        "id": "b",
+        "text": "2"
+      },
+      {
+        "id": "c",
+        "text": "3"
+      },
+      {
+        "id": "d",
+        "text": "Error \u2014 duplicate keys not allowed"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nd = {'x': 10, 'y': 20}\nfor k, v in d.items():\n    print(k, v)",
+    "options": [
+      {
+        "id": "a",
+        "text": "x y"
+      },
+      {
+        "id": "b",
+        "text": "10 20"
+      },
+      {
+        "id": "c",
+        "text": "x 10 then y 20 on separate lines"
+      },
+      {
+        "id": "d",
+        "text": "{'x': 10} {'y': 20}"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\nscores = {'Amina': 88, 'Bello': 72}\nprint(scores.get('Chisom', 'Not found'))",
+    "options": [
+      {
+        "id": "a",
+        "text": "None"
+      },
+      {
+        "id": "b",
+        "text": "KeyError"
+      },
+      {
+        "id": "c",
+        "text": "0"
+      },
+      {
+        "id": "d",
+        "text": "Not found"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\ndef add(a, b=10):\n    return a + b\nprint(add(5))",
+    "options": [
+      {
+        "id": "a",
+        "text": "5"
+      },
+      {
+        "id": "b",
+        "text": "Error \u2014 missing argument"
+      },
+      {
+        "id": "c",
+        "text": "15"
+      },
+      {
+        "id": "d",
+        "text": "10"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What does this function return?\n\ndef check(n):\n    if n > 0:\n        return 'Positive'\nprint(check(-5))",
+    "options": [
+      {
+        "id": "a",
+        "text": "Positive"
+      },
+      {
+        "id": "b",
+        "text": "Negative"
+      },
+      {
+        "id": "c",
+        "text": "None"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is wrong with this code?\n\nprint(double(4))\ndef double(n):\n    return n * 2",
+    "options": [
+      {
+        "id": "a",
+        "text": "The return type is wrong"
+      },
+      {
+        "id": "b",
+        "text": "The function is called before it is defined"
+      },
+      {
+        "id": "c",
+        "text": "n * 2 is invalid syntax"
+      },
+      {
+        "id": "d",
+        "text": "Nothing is wrong"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\ndef greet(name, greeting='Hello'):\n    print(f'{greeting}, {name}!')\ngreet('Amina', 'Welcome')",
+    "options": [
+      {
+        "id": "a",
+        "text": "Hello, Amina!"
+      },
+      {
+        "id": "b",
+        "text": "Welcome, Amina!"
+      },
+      {
+        "id": "c",
+        "text": "Amina, Welcome!"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the difference between a parameter and an argument?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They are the same thing"
+      },
+      {
+        "id": "b",
+        "text": "A parameter is in the function definition, an argument is the value passed when calling"
+      },
+      {
+        "id": "c",
+        "text": "An argument is in the definition, a parameter is passed when calling"
+      },
+      {
+        "id": "d",
+        "text": "Parameters are only used with return"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-2",
+    "prompt": "What is the output?\n\ndef calc(a, b):\n    result = a * b\nprint(calc(3, 4))",
+    "options": [
+      {
+        "id": "a",
+        "text": "12"
+      },
+      {
+        "id": "b",
+        "text": "None"
+      },
+      {
+        "id": "c",
+        "text": "7"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\nname = '  bello  '\nprint(name.strip().title())",
+    "options": [
+      {
+        "id": "a",
+        "text": "bello"
+      },
+      {
+        "id": "b",
+        "text": "Bello"
+      },
+      {
+        "id": "c",
+        "text": "BELLO"
+      },
+      {
+        "id": "d",
+        "text": "' bello '"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\nemail = 'AMINA@ICBM.NG'\nprint(email.lower().endswith('.ng'))",
+    "options": [
+      {
+        "id": "a",
+        "text": "True"
+      },
+      {
+        "id": "b",
+        "text": "False"
+      },
+      {
+        "id": "c",
+        "text": "amina@icbm.ng"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "a"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\ntext = 'a,b,c,d'\nparts = text.split(',')\nprint(len(parts))",
+    "options": [
+      {
+        "id": "a",
+        "text": "3"
+      },
+      {
+        "id": "b",
+        "text": "4"
+      },
+      {
+        "id": "c",
+        "text": "7"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\nwords = ['Python', 'is', 'great']\nprint(' '.join(words))",
+    "options": [
+      {
+        "id": "a",
+        "text": "['Python', 'is', 'great']"
+      },
+      {
+        "id": "b",
+        "text": "Pythonisgreat"
+      },
+      {
+        "id": "c",
+        "text": "Python is great"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\nname = 'elephant'\nprint(name[1:-1])",
+    "options": [
+      {
+        "id": "a",
+        "text": "lephant"
+      },
+      {
+        "id": "b",
+        "text": "elephan"
+      },
+      {
+        "id": "c",
+        "text": "lephan"
+      },
+      {
+        "id": "d",
+        "text": "elephant"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\nimport numpy as np\narr = np.array([1, 2, 3, 4, 5])\nprint(arr + 10)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[11]"
+      },
+      {
+        "id": "b",
+        "text": "[1, 2, 3, 4, 5, 10]"
+      },
+      {
+        "id": "c",
+        "text": "[11 12 13 14 15]"
+      },
+      {
+        "id": "d",
+        "text": "Error \u2014 cannot add scalar to array"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\na = [1, 2, 3]\nb = [4, 5, 6]\nprint(a + b)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[5 7 9]"
+      },
+      {
+        "id": "b",
+        "text": "[1, 2, 3, 4, 5, 6]"
+      },
+      {
+        "id": "c",
+        "text": "[5, 7, 9]"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\nimport numpy as np\na = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\nprint(a + b)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[1, 2, 3, 4, 5, 6]"
+      },
+      {
+        "id": "b",
+        "text": "[5 7 9]"
+      },
+      {
+        "id": "c",
+        "text": "[5, 7, 9]"
+      },
+      {
+        "id": "d",
+        "text": "Error"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does np.linspace(0, 10, 5) produce?",
+    "options": [
+      {
+        "id": "a",
+        "text": "[0, 2, 4, 6, 8]"
+      },
+      {
+        "id": "b",
+        "text": "[0, 2.5, 5.0, 7.5, 10.0]"
+      },
+      {
+        "id": "c",
+        "text": "[0, 10, 5]"
+      },
+      {
+        "id": "d",
+        "text": "[0, 1, 2, 3, 4]"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does np.arange(0, 10, 3) produce?",
+    "options": [
+      {
+        "id": "a",
+        "text": "[0, 3, 6, 9, 10]"
+      },
+      {
+        "id": "b",
+        "text": "[0, 3, 6]"
+      },
+      {
+        "id": "c",
+        "text": "[0, 3, 6, 9]"
+      },
+      {
+        "id": "d",
+        "text": "[1, 4, 7, 10]"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\nimport numpy as np\narr = np.array([3, 8, 2, 9, 5])\nprint(arr[arr > 4])",
+    "options": [
+      {
+        "id": "a",
+        "text": "[True True False True True]"
+      },
+      {
+        "id": "b",
+        "text": "[8, 9, 5]"
+      },
+      {
+        "id": "c",
+        "text": "[8 9 5]"
+      },
+      {
+        "id": "d",
+        "text": "[3 2]"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the output?\n\nimport numpy as np\narr = np.array([4, 7, 2, 9, 5])\nprint(arr.mean())",
+    "options": [
+      {
+        "id": "a",
+        "text": "5"
+      },
+      {
+        "id": "b",
+        "text": "5.0"
+      },
+      {
+        "id": "c",
+        "text": "5.4"
+      },
+      {
+        "id": "d",
+        "text": "27"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the step size for np.linspace(10, 50, 5)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "5"
+      },
+      {
+        "id": "b",
+        "text": "8"
+      },
+      {
+        "id": "c",
+        "text": "10"
+      },
+      {
+        "id": "d",
+        "text": "12.5"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is wrong with this code?\n\nimport numpy as np\narr = np.array(1, 2, 3)\nprint(arr)",
+    "options": [
+      {
+        "id": "a",
+        "text": "numpy is imported incorrectly"
+      },
+      {
+        "id": "b",
+        "text": "np.array requires the list inside square brackets"
+      },
+      {
+        "id": "c",
+        "text": "print cannot be used with arrays"
+      },
+      {
+        "id": "d",
+        "text": "Nothing is wrong"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does df.shape return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The column names"
+      },
+      {
+        "id": "b",
+        "text": "A tuple of (rows, columns)"
+      },
+      {
+        "id": "c",
+        "text": "The data types of each column"
+      },
+      {
+        "id": "d",
+        "text": "The first 5 rows"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the difference between df.head() and df.describe()?",
+    "options": [
+      {
+        "id": "a",
+        "text": "head() shows statistics, describe() shows rows"
+      },
+      {
+        "id": "b",
+        "text": "head() shows the first 5 rows, describe() shows summary statistics for numeric columns"
+      },
+      {
+        "id": "c",
+        "text": "They show the same thing"
+      },
+      {
+        "id": "d",
+        "text": "head() only works on text columns"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does df.isnull().sum() give you?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The total number of rows"
+      },
+      {
+        "id": "b",
+        "text": "The number of True values in the dataframe"
+      },
+      {
+        "id": "c",
+        "text": "The count of missing values per column"
+      },
+      {
+        "id": "d",
+        "text": "The percentage of missing values"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does df.isnull().sum().sum() return?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Missing values per column"
+      },
+      {
+        "id": "b",
+        "text": "Total missing values across the entire dataframe"
+      },
+      {
+        "id": "c",
+        "text": "Number of columns with missing values"
+      },
+      {
+        "id": "d",
+        "text": "The row count"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "A column called waterbody shows 155 NaN values. Those houses have no nearby water body. What is the correct fix?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df.dropna(subset=['waterbody'])"
+      },
+      {
+        "id": "b",
+        "text": "df['waterbody'].fillna(0)"
+      },
+      {
+        "id": "c",
+        "text": "df['waterbody'] = df['waterbody'].fillna('None')"
+      },
+      {
+        "id": "d",
+        "text": "df['waterbody'].drop()"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "Which command shows column data types and non-null counts for every column?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df.describe()"
+      },
+      {
+        "id": "b",
+        "text": "df.shape"
+      },
+      {
+        "id": "c",
+        "text": "df.info()"
+      },
+      {
+        "id": "d",
+        "text": "df.head()"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does df.describe() exclude by default?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Numeric columns"
+      },
+      {
+        "id": "b",
+        "text": "The mean"
+      },
+      {
+        "id": "c",
+        "text": "Text (object) columns"
+      },
+      {
+        "id": "d",
+        "text": "The count row"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is wrong with df['Name', 'Score']?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Column names need quotes"
+      },
+      {
+        "id": "b",
+        "text": "Need double brackets: df[['Name','Score']]"
+      },
+      {
+        "id": "c",
+        "text": "Pandas cannot select two columns"
+      },
+      {
+        "id": "d",
+        "text": "Comma should be a dot"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "How do you filter a DataFrame to rows where Score > 80 AND City is Lagos?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df[df['Score'] > 80 and df['City'] == 'Lagos']"
+      },
+      {
+        "id": "b",
+        "text": "df[(df['Score'] > 80) & (df['City'] == 'Lagos')]"
+      },
+      {
+        "id": "c",
+        "text": "df[df['Score'] > 80, df['City'] == 'Lagos']"
+      },
+      {
+        "id": "d",
+        "text": "df.filter(Score > 80, City == 'Lagos')"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "Which chart shows how a numeric column is distributed across its range of values?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Bar plot"
+      },
+      {
+        "id": "b",
+        "text": "Scatter plot"
+      },
+      {
+        "id": "c",
+        "text": "Histogram"
+      },
+      {
+        "id": "d",
+        "text": "Count plot"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "Which chart compares scores across different cities?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Histogram"
+      },
+      {
+        "id": "b",
+        "text": "Box plot"
+      },
+      {
+        "id": "c",
+        "text": "Line plot"
+      },
+      {
+        "id": "d",
+        "text": "Bar plot"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is wrong with sns.barplot(df, 'Name', 'Score')?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df must be data=df"
+      },
+      {
+        "id": "b",
+        "text": "Columns must use x= and y= labels"
+      },
+      {
+        "id": "c",
+        "text": "Both A and B are recommended"
+      },
+      {
+        "id": "d",
+        "text": "Nothing is wrong"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does plt.show() do?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Saves the chart to a file"
+      },
+      {
+        "id": "b",
+        "text": "Displays the chart on screen"
+      },
+      {
+        "id": "c",
+        "text": "Clears the chart"
+      },
+      {
+        "id": "d",
+        "text": "Opens a new figure window"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is df['price'].describe() used for in outlier analysis?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Directly removes outliers"
+      },
+      {
+        "id": "b",
+        "text": "Shows count, mean, std, min, quartiles, max to spot suspicious extremes"
+      },
+      {
+        "id": "c",
+        "text": "Filters the dataframe"
+      },
+      {
+        "id": "d",
+        "text": "Calculates IQR automatically"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does Q1 represent in the IQR method?",
+    "options": [
+      {
+        "id": "a",
+        "text": "The minimum value"
+      },
+      {
+        "id": "b",
+        "text": "The mean"
+      },
+      {
+        "id": "c",
+        "text": "The value below which 25% of data falls"
+      },
+      {
+        "id": "d",
+        "text": "The first row"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the formula for IQR?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Mean minus Median"
+      },
+      {
+        "id": "b",
+        "text": "Max minus Min"
+      },
+      {
+        "id": "c",
+        "text": "Q3 minus Q1"
+      },
+      {
+        "id": "d",
+        "text": "Q3 plus Q1"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "Given Q1 = 17 and Q3 = 25, what is the IQR?",
+    "options": [
+      {
+        "id": "a",
+        "text": "42"
+      },
+      {
+        "id": "b",
+        "text": "21"
+      },
+      {
+        "id": "c",
+        "text": "4"
+      },
+      {
+        "id": "d",
+        "text": "8"
+      }
+    ],
+    "correct_option_id": "d"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "Using IQR = 8 and Q3 = 25, what is the upper fence?",
+    "options": [
+      {
+        "id": "a",
+        "text": "33"
+      },
+      {
+        "id": "b",
+        "text": "37"
+      },
+      {
+        "id": "c",
+        "text": "41"
+      },
+      {
+        "id": "d",
+        "text": "29"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "Using Q1 = 17 and IQR = 8, what is the lower fence?",
+    "options": [
+      {
+        "id": "a",
+        "text": "5"
+      },
+      {
+        "id": "b",
+        "text": "9"
+      },
+      {
+        "id": "c",
+        "text": "3"
+      },
+      {
+        "id": "d",
+        "text": "1"
+      }
+    ],
+    "correct_option_id": "a"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "How do you calculate Q1 for a column called price using Pandas?",
+    "options": [
+      {
+        "id": "a",
+        "text": "df['price'].Q1()"
+      },
+      {
+        "id": "b",
+        "text": "df['price'].quartile(1)"
+      },
+      {
+        "id": "c",
+        "text": "df['price'].quantile(0.25)"
+      },
+      {
+        "id": "d",
+        "text": "np.Q1(df['price'])"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does this code do?\n\noutliers = df[(df['price'] < lower_fence) | (df['price'] > upper_fence)]",
+    "options": [
+      {
+        "id": "a",
+        "text": "Removes outliers from the dataframe"
+      },
+      {
+        "id": "b",
+        "text": "Filters and returns only the outlier rows for inspection"
+      },
+      {
+        "id": "c",
+        "text": "Replaces outliers with the mean"
+      },
+      {
+        "id": "d",
+        "text": "Raises an error if outliers exist"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does this line do?\n\ndf.n_hot_rooms[(df.n_hot_rooms > 3*uv)] = 3*uv",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deletes rows where n_hot_rooms exceeds 3*uv"
+      },
+      {
+        "id": "b",
+        "text": "Replaces values above 3*uv with 3*uv, capping them"
+      },
+      {
+        "id": "c",
+        "text": "Calculates the 99th percentile"
+      },
+      {
+        "id": "d",
+        "text": "Filters to only extreme rows"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is the difference between capping an outlier and deleting a row containing one?",
+    "options": [
+      {
+        "id": "a",
+        "text": "They produce the same result"
+      },
+      {
+        "id": "b",
+        "text": "Capping preserves the row, replacing only the extreme value; deleting removes all info in that row"
+      },
+      {
+        "id": "c",
+        "text": "Deleting is always preferred"
+      },
+      {
+        "id": "d",
+        "text": "Capping is only for text columns"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "A house price column shows 16 entries with value 50.0 at the exact maximum. What does this indicate?",
+    "options": [
+      {
+        "id": "a",
+        "text": "16 houses sold for the same price"
+      },
+      {
+        "id": "b",
+        "text": "A data entry error repeated 16 times"
+      },
+      {
+        "id": "c",
+        "text": "The data was censored \u2014 prices above a ceiling were recorded as that ceiling"
+      },
+      {
+        "id": "d",
+        "text": "The IQR method should be rerun"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What does the 1.5 multiplier in the IQR fence formula represent?",
+    "options": [
+      {
+        "id": "a",
+        "text": "A random convention"
+      },
+      {
+        "id": "b",
+        "text": "The standard threshold that flags approximately the most extreme 0.7% of normally distributed data"
+      },
+      {
+        "id": "c",
+        "text": "1.5 times the mean"
+      },
+      {
+        "id": "d",
+        "text": "The square root of 2 rounded"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "What is wrong with quantile(25) instead of quantile(0.25)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "quantile() should be quartile()"
+      },
+      {
+        "id": "b",
+        "text": "quantile() expects a decimal between 0 and 1, not a whole number"
+      },
+      {
+        "id": "c",
+        "text": "Column name must be lowercase"
+      },
+      {
+        "id": "d",
+        "text": "Nothing is wrong"
+      }
+    ],
+    "correct_option_id": "b"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "df.describe() shows min=5.0, 25%=17.0, 75%=25.0, max=50.0, IQR=8. Which values are outliers?",
+    "options": [
+      {
+        "id": "a",
+        "text": "5.0 only"
+      },
+      {
+        "id": "b",
+        "text": "50.0 only"
+      },
+      {
+        "id": "c",
+        "text": "Both 5.0 and 50.0"
+      },
+      {
+        "id": "d",
+        "text": "Neither"
+      }
+    ],
+    "correct_option_id": "c"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "Q1=17.025, Q3=25.0, IQR=7.975. What is round(Q3 + 1.5 * IQR, 2)?",
+    "options": [
+      {
+        "id": "a",
+        "text": "36.96"
+      },
+      {
+        "id": "b",
+        "text": "37.00"
+      },
+      {
+        "id": "c",
+        "text": "38.96"
+      },
+      {
+        "id": "d",
+        "text": "29.00"
+      }
+    ],
+    "correct_option_id": "a"
+  },
+  {
+    "type": "objective",
+    "group": "assessment-3",
+    "prompt": "Which is the correct complete sequence for the IQR outlier detection method?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Calculate mean, subtract std, flag anything > 2 std away"
+      },
+      {
+        "id": "b",
+        "text": "Sort column, remove top and bottom 5%"
+      },
+      {
+        "id": "c",
+        "text": "Calculate Q1 and Q3, find IQR = Q3-Q1, set fences at Q1-1.5*IQR and Q3+1.5*IQR, flag values outside"
+      },
+      {
+        "id": "d",
+        "text": "Take 99th percentile, multiply by 3, use as ceiling"
+      }
+    ],
+    "correct_option_id": "c"
+  }
+]

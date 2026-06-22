@@ -18,7 +18,7 @@ def _seed_for(exam_id: str, unique_code: str) -> random.Random:
     return random.Random(int(digest, 16))
 
 
-def build_paper(exam: dict, question_bank: list[dict], unique_code: str) -> tuple[list[str], dict]:
+def build_paper(exam: dict, question_bank: list[dict], unique_code: str, question_group: str = None) -> tuple[list[str], dict]:
     """
     Returns (question_order, option_shuffles) for one student.
 
@@ -30,6 +30,10 @@ def build_paper(exam: dict, question_bank: list[dict], unique_code: str) -> tupl
                      grading stays a simple id comparison.
     """
     rng = _seed_for(exam["id"], unique_code)
+
+    # Filter by question group if specified
+    if question_group:
+        question_bank = [q for q in question_bank if q.get("question_group") == question_group]
 
     objective_pool = [q for q in question_bank if q["type"] == "objective"]
     code_pool = [q for q in question_bank if q["type"] == "code"]
