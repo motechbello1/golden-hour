@@ -208,10 +208,8 @@ export default function AdminDashboard() {
                     </span>
                   )}
                   <Badge status={s.status} />
-                  {s.auto_submit_reason && (
-                    <span className="text-alert text-xs bg-alert/10 rounded-lg px-2 py-0.5 capitalize">
-                      {s.auto_submit_reason}
-                    </span>
+                  {s.status === "auto_submitted" && (
+                    <span className="text-alert text-xs bg-alert/10 rounded-lg px-2 py-0.5">auto-submitted</span>
                   )}
                 </div>
               </div>
@@ -377,8 +375,8 @@ export default function AdminDashboard() {
                     </span>
                     <span className="text-ash text-xs font-mono">{s.score}/{s.max_score}</span>
                     <Badge status={s.status} />
-                    {s.auto_submit_reason && (
-                      <span className="text-alert text-xs bg-alert/10 rounded-lg px-2 py-0.5 capitalize">{s.auto_submit_reason}</span>
+                    {s.status === "auto_submitted" && (
+                      <span className="text-alert text-xs bg-alert/10 rounded-lg px-2 py-0.5">auto-submitted</span>
                     )}
                     {s.submitted_at && (
                       <span className="text-ash/50 text-xs hidden sm:block">{new Date(s.submitted_at).toLocaleDateString()}</span>
